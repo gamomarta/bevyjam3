@@ -2,17 +2,13 @@
 
 use bevy::prelude::*;
 
+mod assets;
+mod state;
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_startup_system(setup)
+        .add_plugin(assets::Assets)
+        .add_plugin(state::State)
         .run();
-}
-
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2dBundle::default());
-    commands.spawn(SpriteBundle {
-        texture: asset_server.load("icon.png"),
-        ..Default::default()
-    });
 }
