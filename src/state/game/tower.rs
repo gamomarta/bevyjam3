@@ -40,6 +40,8 @@ fn spawn_tower(mut commands: Commands, sprites: Res<Sprites>) {
 #[derive(Component)]
 struct Bullet;
 
+const BULLET_SPEED: f32 = 200.0;
+
 fn shoot(
     mut commands: Commands,
     sprites: Res<Sprites>,
@@ -63,12 +65,13 @@ fn shoot(
             let Some((target_transform, target_velocity)) = closest_enemy else { continue };
             let velocity = unsafe {
                 // some mathy stuff lol TODO: refactor
+                // TODO: consider divisions by zero
                 let x1 = target_transform.translation.x;
                 let y1 = target_transform.translation.y;
                 let v1 = target_velocity;
                 let x2 = tower_transform.translation.x;
                 let y2 = tower_transform.translation.y;
-                let v = 200.0;
+                let v = BULLET_SPEED;
                 let alpha = (x2 - x1) / (y2 - y1);
                 let beta = v1.x() - alpha * v1.y();
                 // second degree equation solution
