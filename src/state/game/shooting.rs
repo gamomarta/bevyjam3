@@ -27,7 +27,7 @@ fn shoot(
     mut towers: Query<(&Transform, &ShootRadius, &mut ShootTimer), With<Tower>>,
     enemies: Query<(&Transform, &Velocity), With<Enemy>>,
 ) {
-     for (tower_transform, tower_shoot_radius, mut tower_shoot_timer) in towers.iter_mut() {
+    for (tower_transform, tower_shoot_radius, mut tower_shoot_timer) in towers.iter_mut() {
         if tower_shoot_timer.tick(time.delta()).finished() {
             let distance_to_tower = |enemy_transform: &&Transform| {
                 (enemy_transform.translation - tower_transform.translation).length()
