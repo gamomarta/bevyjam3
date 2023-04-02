@@ -6,7 +6,9 @@ use crate::state::game::bullet::{Bullet, BULLET_SPEED};
 use crate::state::game::damage::Damage;
 use crate::state::game::enemy::Enemy;
 use crate::state::game::health::Health;
+use crate::state::game::money::Money;
 use crate::state::game::movement::Velocity;
+use crate::state::game::player::Player;
 use crate::state::game::tower::{ShootRadius, ShootTimer, Tower};
 use crate::state::AppState;
 
@@ -82,6 +84,7 @@ fn shoot(
 fn enemy_bullet_collision(
     mut commands: Commands,
     mut enemies: Query<(Entity, &Transform, &mut Health), With<Enemy>>,
+    mut money: Query<&mut Money, With<Player>>,
     bullets: Query<(Entity, &Transform, &Damage), With<Bullet>>,
 ) {
     for (enemy, enemy_transform, mut enemy_health) in enemies.iter_mut() {
@@ -96,6 +99,7 @@ fn enemy_bullet_collision(
             }
         }
         if enemy_health.is_dead() {
+            *money.single_mut() += Money::for_killing_enemy();
             commands.entity(enemy).despawn();
         }
     }

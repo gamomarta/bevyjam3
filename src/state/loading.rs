@@ -1,6 +1,8 @@
+use bevy::asset::Asset;
 use bevy::prelude::*;
+use bevy::reflect::TypeUuid;
 
-use crate::assets::Sprites;
+use crate::assets::*;
 use crate::state::AppState;
 
 mod assets_loading;
@@ -16,20 +18,31 @@ impl Plugin for Loading {
     }
 }
 
+//TODO: could be a method of AssetsLoading -> changed to AssetLoader
+fn load_asset<T: Asset + TypeUuid>(
+    asset_server: &AssetServer,
+    assets_loading: &mut AssetsLoading,
+    path: &str,
+) -> Handle<T> {
+    let handle = asset_server.load(path);
+    assets_loading.push(handle.clone_untyped());
+    handle
+}
+
 fn load(
     asset_server: Res<AssetServer>,
     mut assets_loading: ResMut<AssetsLoading>,
     mut sprites: ResMut<Sprites>,
+    mut fonts: ResMut<Fonts>,
 ) {
-    let mut load_asset = |path| {
-        let handle = asset_server.load(path);
-        assets_loading.push(handle.clone_untyped());
-        handle
-    };
-    sprites.bevy_logo = load_asset("icon.png");
-    sprites.tower = load_asset("icon.png");
-    sprites.bullet = load_asset("icon.png");
-    sprites.enemy = load_asset("icon.png");
+    let mut load_sprite = |path| load_asset(&asset_server, &mut assets_loading, path);
+    sprites.bevy_logo = load_sprite("icon.png");
+    sprites.tower = load_sprite("icon.png");
+    sprites.bullet = load_sprite("icon.png");
+    sprites.enemy = load_sprite("icon.png");
+
+    let mut load_font = |path| load_asset(&asset_server, &mut assets_loading, path);
+    fonts.default_font = load_font("Kenney Future.ttf");
 }
 
 fn check_loading(

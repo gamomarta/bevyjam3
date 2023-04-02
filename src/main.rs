@@ -1,4 +1,8 @@
-#![allow(clippy::too_many_arguments, clippy::type_complexity)]
+#![allow(
+    clippy::redundant_closure_call,
+    clippy::too_many_arguments,
+    clippy::type_complexity
+)]
 #![feature(core_intrinsics)]
 
 use bevy::prelude::*;
