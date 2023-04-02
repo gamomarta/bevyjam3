@@ -28,7 +28,7 @@ fn spawn_tower(mut commands: Commands, sprites: Res<Sprites>) {
                 .with_scale(Vec3::splat(0.5)),
             ..Default::default()
         })
-        .insert(ShootTimer(Timer::from_seconds(3.0, TimerMode::Once)))
+        .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
         .insert(ShootRadius(600.0))
         .insert(Tower);
 }

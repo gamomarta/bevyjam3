@@ -9,7 +9,7 @@ pub(super) struct EnemyPlugin;
 
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(SpawnTimer(Timer::from_seconds(2.0, TimerMode::Repeating)))
+        app.insert_resource(SpawnTimer(Timer::from_seconds(8.0, TimerMode::Repeating)))
             .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)));
     }
 }
@@ -33,8 +33,12 @@ fn spawn_enemy(
         commands
             .spawn(SpriteBundle {
                 texture: sprites.enemy.clone(),
-                transform: Transform::from_translation(Vec3::new(-window.width() / 2.0, 0.0, 0.0))
-                    .with_scale(Vec3::splat(0.3)),
+                transform: Transform::from_translation(Vec3::new(
+                    -window.width() / 2.0 - 35.0,
+                    0.0,
+                    0.0,
+                ))
+                .with_scale(Vec3::splat(0.3)),
                 ..Default::default()
             })
             .insert(Velocity::new(10.0, 0.0))
