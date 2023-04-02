@@ -3,7 +3,7 @@ name = "bevy_jam_3"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["Luiz Chagas Jardim <luizchagasjardim@gmail.com>, Jorge <jorge@jorge.jorge> "]
+authors = ["Luiz Chagas Jardim <luizchagasjardim@gmail.com>, Jorge Pinto Sousa <jorge.pinto.sousa@proton.me>"]
 description = "Game made for Bevy Jam 3"
 keywords = ["bevy jam 3", "side effect"]
 
