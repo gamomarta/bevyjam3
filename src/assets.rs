@@ -11,4 +11,5 @@ impl Plugin for Assets {
 #[derive(Default, Resource)]
 pub struct Sprites {
     pub bevy_logo: Handle<Image>,
+    pub enemy: Handle<Image>,
 }

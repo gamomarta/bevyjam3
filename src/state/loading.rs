@@ -26,7 +26,8 @@ fn load(
         assets_loading.push(handle.clone_untyped());
         handle
     };
-    sprites.bevy_logo = load_asset("icon.png")
+    sprites.bevy_logo = load_asset("icon.png");
+    sprites.enemy = load_asset("icon.png");
 }
 
 fn check_loading(
