@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use std::intrinsics::sqrtf32;
 
 use crate::assets::Sprites;
 use crate::state::game::bullet::{Bullet, BULLET_SPEED};
