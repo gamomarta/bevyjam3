@@ -14,7 +14,7 @@ impl Plugin for EnemyPlugin {
 }
 
 #[derive(Component)]
-struct Enemy;
+pub(super) struct Enemy;
 
 #[derive(Deref, DerefMut, Resource)]
 struct SpawnTimer(Timer);

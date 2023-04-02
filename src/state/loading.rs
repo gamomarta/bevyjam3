@@ -27,6 +27,8 @@ fn load(
         handle
     };
     sprites.bevy_logo = load_asset("icon.png");
+    sprites.tower = load_asset("icon.png");
+    sprites.bullet = load_asset("icon.png");
     sprites.enemy = load_asset("icon.png");
 }
 
