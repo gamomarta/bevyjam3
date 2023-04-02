@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::assets::Sprites;
+use crate::state::game::health::Health;
 use crate::state::game::movement::Velocity;
 use crate::state::AppState;
 
@@ -37,6 +38,7 @@ fn spawn_enemy(
                 ..Default::default()
             })
             .insert(Velocity::new(10.0, 0.0))
+            .insert(Health::new(10.0))
             .insert(Enemy);
     }
 }

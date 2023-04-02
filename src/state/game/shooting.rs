@@ -3,7 +3,9 @@ use std::intrinsics::sqrtf32;
 
 use crate::assets::Sprites;
 use crate::state::game::bullet::{Bullet, BULLET_SPEED};
+use crate::state::game::damage::Damage;
 use crate::state::game::enemy::Enemy;
+use crate::state::game::health::Health;
 use crate::state::game::movement::Velocity;
 use crate::state::game::tower::{ShootRadius, ShootTimer, Tower};
 use crate::state::AppState;
@@ -12,7 +14,8 @@ pub(super) struct Shooting;
 
 impl Plugin for Shooting {
     fn build(&self, app: &mut App) {
-        app.add_system(shoot.in_set(OnUpdate(AppState::Game)));
+        app.add_system(shoot.in_set(OnUpdate(AppState::Game)))
+            .add_system(enemy_bullet_collision.in_set(OnUpdate(AppState::Game)));
     }
 }
 
@@ -70,7 +73,30 @@ fn shoot(
                     ..Default::default()
                 })
                 .insert(velocity)
+                .insert(Damage::new(1.0))
                 .insert(Bullet);
+        }
+    }
+}
+
+fn enemy_bullet_collision(
+    mut commands: Commands,
+    mut enemies: Query<(Entity, &Transform, &mut Health), With<Enemy>>,
+    bullets: Query<(Entity, &Transform, &Damage), With<Bullet>>,
+) {
+    for (enemy, enemy_transform, mut enemy_health) in enemies.iter_mut() {
+        for (bullet, bullet_transform, bullet_damage) in bullets.iter() {
+            let bullet_size = 5.0; //TODO: this is a guess
+            let enemy_size = 6.0 * bullet_size; //TODO: also a guess
+            let distance_between_centers =
+                (enemy_transform.translation - bullet_transform.translation).length();
+            if distance_between_centers <= enemy_size + bullet_size {
+                commands.entity(bullet).despawn();
+                *enemy_health -= bullet_damage;
+            }
+        }
+        if enemy_health.is_dead() {
+            commands.entity(enemy).despawn();
         }
     }
 }

@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
 mod bullet;
+mod damage;
 mod enemy;
+mod health;
 mod movement;
 mod setup;
 mod shooting;
