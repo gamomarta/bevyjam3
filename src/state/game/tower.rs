@@ -30,9 +30,9 @@ const DEFAULT_SHOOT_RADIUS: f32 = 400.0;
 struct ShootRadiusImage;
 
 const SHOOT_RADIUS_COLOR: Color = Color::Rgba {
-    red: 1.0,
+    red: 0.3,
     green: 0.0,
-    blue: 5.0,
+    blue: 0.8,
     alpha: 0.6,
 };
 
