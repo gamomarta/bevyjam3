@@ -1,0 +1,28 @@
+use bevy::prelude::*;
+
+use crate::assets::Sprites;
+use crate::constants::layers::GOAL_LAYER;
+use crate::state::game::health::Health;
+use crate::state::AppState;
+
+pub(super) struct GoalPlugin;
+
+impl Plugin for GoalPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_system(spawn_goal.in_schedule(OnEnter(AppState::PreGame)));
+    }
+}
+
+#[derive(Component)]
+pub struct Goal;
+
+fn spawn_goal(mut commands: Commands, sprites: Res<Sprites>) {
+    commands
+        .spawn(SpriteBundle {
+            transform: Transform::from_translation(Vec3::new(500.0, 0.0, GOAL_LAYER)),
+            texture: sprites.goal.clone(),
+            ..Default::default()
+        })
+        .insert(Health::new(10.0))
+        .insert(Goal);
+}
