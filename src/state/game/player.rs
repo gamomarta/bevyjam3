@@ -1,13 +1,13 @@
 use bevy::prelude::*;
 
-use crate::state::game::money::Money;
+use crate::state::game::money::{Money, TowerCost};
 use crate::state::AppState;
 
 pub(super) struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_player.in_schedule(OnEnter(AppState::Game)));
+        app.add_system(spawn_player.in_schedule(OnEnter(AppState::PreGame)));
     }
 }
 
@@ -15,6 +15,7 @@ impl Plugin for PlayerPlugin {
 pub struct PlayerBundle {
     player: Player,
     money: Money,
+    price: TowerCost,
 }
 
 #[derive(Component, Default)]

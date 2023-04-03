@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 mod game;
 mod loading;
+mod tower_placing;
 
 pub struct State;
 
@@ -9,7 +10,8 @@ impl Plugin for State {
     fn build(&self, app: &mut App) {
         app.add_state::<AppState>()
             .add_plugin(loading::Loading)
-            .add_plugin(game::Game);
+            .add_plugin(game::Game)
+            .add_plugin(tower_placing::TowerPlacing);
     }
 }
 
@@ -17,5 +19,7 @@ impl Plugin for State {
 pub enum AppState {
     #[default]
     Loading,
+    PreGame,
     Game,
+    TowerPlacing,
 }

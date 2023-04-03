@@ -39,7 +39,8 @@ fn spawn_enemy(
             overlapping = false;
             for enemy_transform in enemies.iter_mut() {
                 let distance = (enemy_transform.translation - position).length();
-                if distance < 150.0 { // magic loll
+                if distance < 150.0 {
+                    // magic loll
                     overlapping = true;
                     position.x -= 350.0;
                     break;

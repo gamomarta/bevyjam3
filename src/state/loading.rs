@@ -56,7 +56,7 @@ fn check_loading(
     match asset_server.get_group_load_state(loading.iter().map(|h| h.id())) {
         LoadState::Loaded => {
             commands.remove_resource::<AssetsLoading>();
-            next_state.set(AppState::Game);
+            next_state.set(AppState::PreGame);
         }
         LoadState::NotLoaded | LoadState::Loading | LoadState::Unloaded => {}
         LoadState::Failed => {

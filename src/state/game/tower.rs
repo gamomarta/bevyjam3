@@ -2,13 +2,15 @@ use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::assets::Sprites;
+use crate::constants::TOWER_SPRITE_SCALE;
 use crate::state::AppState;
+use crate::utils::cursor_coordinates_to_world_coordinates;
 
 pub(super) struct TowerPlugin;
 
 impl Plugin for TowerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_tower.in_schedule(OnEnter(AppState::Game)))
+        app.add_system(spawn_tower.in_schedule(OnEnter(AppState::PreGame)))
             .add_system(show_radius.in_set(OnUpdate(AppState::Game)));
     }
 }
@@ -16,20 +18,18 @@ impl Plugin for TowerPlugin {
 #[derive(Component)]
 pub struct Tower;
 
-const TOWER_SPRITE_SCALE: f32 = 0.5;
-
 #[derive(Component, Deref, DerefMut)]
 pub struct ShootTimer(Timer);
 
 #[derive(Component, Deref, DerefMut)]
 pub struct ShootRadius(f32);
 
-const DEFAULT_SHOOT_RADIUS: f32 = 400.0;
+pub const DEFAULT_SHOOT_RADIUS: f32 = 400.0;
 
 #[derive(Component)]
 struct ShootRadiusImage;
 
-const SHOOT_RADIUS_COLOR: Color = Color::Rgba {
+pub const SHOOT_RADIUS_COLOR: Color = Color::Rgba {
     red: 0.3,
     green: 0.0,
     blue: 0.8,
@@ -74,11 +74,9 @@ fn show_radius(
     camera: Query<(&Camera, &GlobalTransform)>,
 ) {
     let window = window.single();
-    let (camera, camera_transform) = camera.single();
+    let camera = camera.single();
 
-    let Some(cursor_position) = window.cursor_position()
-        .and_then(|viewport_position| camera.viewport_to_world(camera_transform, viewport_position))
-        .map(|ray| ray.origin.truncate()) else { return; };
+    let Some(cursor_position) = cursor_coordinates_to_world_coordinates(window, camera) else { return; };
 
     for (tower_transform, children) in towers.iter() {
         let tower_position = tower_transform.translation.truncate();
