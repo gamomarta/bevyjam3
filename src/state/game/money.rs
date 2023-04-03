@@ -3,12 +3,20 @@ use bevy::prelude::*;
 use std::fmt::Formatter;
 use std::ops::AddAssign;
 
-#[derive(Component, Default, Deref, DerefMut)]
+use crate::constants::STARTING_MONEY;
+
+#[derive(Component, Deref, DerefMut)]
 pub struct Money(u128);
 
 impl std::fmt::Display for Money {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
+    }
+}
+
+impl Default for Money {
+    fn default() -> Self {
+        Money(STARTING_MONEY)
     }
 }
 
