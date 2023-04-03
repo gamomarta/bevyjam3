@@ -8,7 +8,9 @@
 use bevy::prelude::*;
 
 mod assets;
+mod constants;
 mod state;
+mod utils;
 
 fn main() {
     App::new()

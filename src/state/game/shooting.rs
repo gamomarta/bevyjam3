@@ -8,7 +8,7 @@ use crate::state::game::health::Health;
 use crate::state::game::money::Money;
 use crate::state::game::movement::Velocity;
 use crate::state::game::player::Player;
-use crate::state::game::tower::{ShootRadius, ShootTimer, Tower};
+use crate::state::game::tower::Tower;
 use crate::state::AppState;
 
 pub(super) struct Shooting;
@@ -19,6 +19,15 @@ impl Plugin for Shooting {
             .add_system(enemy_bullet_collision.in_set(OnUpdate(AppState::Game)));
     }
 }
+
+#[derive(Component, Deref, DerefMut)]
+pub struct ShootRadius(pub f32);
+
+#[derive(Component)]
+pub struct ShootRadiusImage;
+
+#[derive(Component, Deref, DerefMut)]
+pub struct ShootTimer(pub Timer);
 
 fn shoot(
     mut commands: Commands,

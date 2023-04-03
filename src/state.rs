@@ -17,5 +17,7 @@ impl Plugin for State {
 pub enum AppState {
     #[default]
     Loading,
+    PreGame,
     Game,
+    TowerPlacing,
 }

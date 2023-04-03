@@ -11,6 +11,7 @@ mod player;
 mod setup;
 mod shooting;
 mod tower;
+mod tower_placing;
 
 pub(super) struct Game;
 
@@ -22,6 +23,7 @@ impl Plugin for Game {
             .add_plugin(player::PlayerPlugin)
             .add_plugin(setup::Setup)
             .add_plugin(shooting::Shooting)
+            .add_plugin(tower_placing::TowerPlacing)
             .add_plugin(tower::TowerPlugin);
     }
 }
