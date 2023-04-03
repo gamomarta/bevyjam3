@@ -36,10 +36,16 @@ fn display_hud(mut commands: Commands, fonts: Res<Fonts>, sprites: Res<Sprites>)
             style: Style {
                 flex_direction: FlexDirection::Column,
                 size: Size::width(Val::Percent(10.0)),
-                align_items: AlignItems::FlexStart,
-                justify_content: JustifyContent::FlexStart,
+                align_items: AlignItems::FlexEnd,
+                justify_content: JustifyContent::FlexEnd,
                 margin: UiRect::all(Val::Percent(1.0)),
                 gap: Size::all(Val::Percent(1.0)),
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    bottom: Val::Px(0.0),
+                    right: Val::Px(0.0),
+                    ..Default::default()
+                },
                 ..default()
             },
             ..default()
