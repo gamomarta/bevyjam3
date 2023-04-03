@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 mod game;
+mod game_over;
 mod loading;
 
 pub struct State;
@@ -19,5 +20,7 @@ pub enum AppState {
     Loading,
     PreGame,
     Game,
+    TowerChoice,
     TowerPlacing,
+    GameOver,
 }

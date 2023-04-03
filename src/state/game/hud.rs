@@ -128,7 +128,7 @@ fn buy(
     button_color.0 = if money.can_buy(price) {
         match button_interaction {
             Interaction::Clicked => {
-                next_state.set(AppState::TowerPlacing);
+                next_state.set(AppState::TowerChoice);
                 money.buy(price);
                 CLICKED_COLOR
             }

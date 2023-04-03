@@ -9,7 +9,8 @@ pub(super) struct GoalPlugin;
 
 impl Plugin for GoalPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(spawn_goal.in_schedule(OnEnter(AppState::PreGame)));
+        app.add_system(spawn_goal.in_schedule(OnEnter(AppState::PreGame)))
+            .add_system(lose.in_set(OnUpdate(AppState::Game)));
     }
 }
 
@@ -25,4 +26,10 @@ fn spawn_goal(mut commands: Commands, sprites: Res<Sprites>) {
         })
         .insert(Health::new(10.0))
         .insert(Goal);
+}
+
+fn lose(goals: Query<With<Goal>>, mut next_state: ResMut<NextState<AppState>>) {
+    if goals.is_empty() {
+        next_state.set(AppState::GameOver);
+    }
 }
