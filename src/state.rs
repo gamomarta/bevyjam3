@@ -1,8 +1,8 @@
 use bevy::prelude::*;
+use game::tower_placing;
 
 mod game;
 mod loading;
-mod tower_placing;
 
 pub struct State;
 

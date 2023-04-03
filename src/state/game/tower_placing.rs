@@ -1,12 +1,15 @@
 use bevy::prelude::*;
+use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::assets::Sprites;
 use crate::constants::layers::*;
 use crate::constants::*;
+use crate::state::game::tower::ShootTimer;
+use crate::state::game::tower_radius::{ShootRadius, ShootRadiusImage, Tower};
 use crate::state::AppState;
 use crate::utils::*;
 
-pub(super) struct TowerPlacing;
+pub(in crate::state) struct TowerPlacing;
 
 impl Plugin for TowerPlacing {
     fn build(&self, app: &mut App) {
@@ -20,14 +23,33 @@ impl Plugin for TowerPlacing {
 #[derive(Component)]
 struct TowerPlan;
 
-fn spawn_tower_plan(mut commands: Commands, sprites: Res<Sprites>) {
+fn spawn_tower_plan(
+    mut commands: Commands,
+    sprites: Res<Sprites>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
     commands
         .spawn(SpriteBundle {
             texture: sprites.tower.clone(),
             transform: Transform::from_scale(Vec3::splat(TOWER_SPRITE_SCALE)),
             ..Default::default()
         })
-        .insert(TowerPlan);
+        .insert(TowerPlan)
+        .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
+        .insert(ShootRadius(DEFAULT_SHOOT_RADIUS))
+        .with_children(|tower| {
+            tower
+                .spawn(MaterialMesh2dBundle {
+                    mesh: meshes
+                        .add(shape::Circle::new(DEFAULT_SHOOT_RADIUS / TOWER_SPRITE_SCALE).into())
+                        .into(),
+                    material: materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR)),
+                    transform: Transform::from_translation(2.0 * Vec3::Z),
+                    ..default()
+                })
+                .insert(ShootRadiusImage);
+        });
 }
 
 fn update_plan_position(
@@ -51,5 +73,8 @@ fn click(mouse: Res<Input<MouseButton>>, mut next_state: ResMut<NextState<AppSta
 }
 
 fn cleanup(mut commands: Commands, tower: Query<Entity, With<TowerPlan>>) {
-    commands.entity(tower.single()).despawn();
+    commands
+        .entity(tower.single())
+        .remove::<TowerPlan>()
+        .insert(Tower);
 }

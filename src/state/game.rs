@@ -11,6 +11,8 @@ mod player;
 mod setup;
 mod shooting;
 mod tower;
+pub mod tower_placing;
+pub mod tower_radius;
 
 pub(super) struct Game;
 

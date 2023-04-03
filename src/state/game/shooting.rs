@@ -8,7 +8,8 @@ use crate::state::game::health::Health;
 use crate::state::game::money::Money;
 use crate::state::game::movement::Velocity;
 use crate::state::game::player::Player;
-use crate::state::game::tower::{ShootRadius, ShootTimer, Tower};
+use crate::state::game::tower::ShootTimer;
+use crate::state::game::tower_radius::{ShootRadius, Tower};
 use crate::state::AppState;
 
 pub(super) struct Shooting;

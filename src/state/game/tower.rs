@@ -2,7 +2,8 @@ use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::assets::Sprites;
-use crate::constants::TOWER_SPRITE_SCALE;
+use crate::constants::*;
+use crate::state::game::tower_radius::{ShootRadius, ShootRadiusImage, Tower};
 use crate::state::AppState;
 use crate::utils::cursor_coordinates_to_world_coordinates;
 
@@ -15,26 +16,8 @@ impl Plugin for TowerPlugin {
     }
 }
 
-#[derive(Component)]
-pub struct Tower;
-
 #[derive(Component, Deref, DerefMut)]
-pub struct ShootTimer(Timer);
-
-#[derive(Component, Deref, DerefMut)]
-pub struct ShootRadius(f32);
-
-pub const DEFAULT_SHOOT_RADIUS: f32 = 400.0;
-
-#[derive(Component)]
-struct ShootRadiusImage;
-
-pub const SHOOT_RADIUS_COLOR: Color = Color::Rgba {
-    red: 0.3,
-    green: 0.0,
-    blue: 0.8,
-    alpha: 0.6,
-};
+pub struct ShootTimer(pub Timer);
 
 fn spawn_tower(
     mut commands: Commands,
