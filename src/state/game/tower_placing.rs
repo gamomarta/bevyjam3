@@ -4,8 +4,8 @@ use bevy::sprite::MaterialMesh2dBundle;
 use crate::assets::Sprites;
 use crate::constants::layers::*;
 use crate::constants::*;
-use crate::state::game::tower::ShootTimer;
-use crate::state::game::tower_radius::{ShootRadius, ShootRadiusImage, Tower};
+use crate::state::game::shooting::{ShootRadius, ShootRadiusImage, ShootTimer};
+use crate::state::game::tower::Tower;
 use crate::state::AppState;
 use crate::utils::*;
 

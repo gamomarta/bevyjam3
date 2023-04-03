@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use game::tower_placing;
 
 mod game;
 mod loading;
@@ -10,8 +9,7 @@ impl Plugin for State {
     fn build(&self, app: &mut App) {
         app.add_state::<AppState>()
             .add_plugin(loading::Loading)
-            .add_plugin(game::Game)
-            .add_plugin(tower_placing::TowerPlacing);
+            .add_plugin(game::Game);
     }
 }
 

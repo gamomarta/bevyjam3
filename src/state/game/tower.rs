@@ -3,7 +3,7 @@ use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::assets::Sprites;
 use crate::constants::*;
-use crate::state::game::tower_radius::{ShootRadius, ShootRadiusImage, Tower};
+use crate::state::game::shooting::{ShootRadius, ShootRadiusImage, ShootTimer};
 use crate::state::AppState;
 use crate::utils::cursor_coordinates_to_world_coordinates;
 
@@ -16,8 +16,8 @@ impl Plugin for TowerPlugin {
     }
 }
 
-#[derive(Component, Deref, DerefMut)]
-pub struct ShootTimer(pub Timer);
+#[derive(Component)]
+pub struct Tower;
 
 fn spawn_tower(
     mut commands: Commands,
