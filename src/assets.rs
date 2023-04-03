@@ -1,0 +1,22 @@
+use bevy::prelude::*;
+
+pub struct Assets;
+
+impl Plugin for Assets {
+    fn build(&self, app: &mut App) {
+        app.init_resource::<Sprites>().init_resource::<Fonts>();
+    }
+}
+
+#[derive(Default, Resource)]
+pub struct Sprites {
+    pub bevy_logo: Handle<Image>,
+    pub tower: Handle<Image>,
+    pub bullet: Handle<Image>,
+    pub enemy: Handle<Image>,
+}
+
+#[derive(Default, Resource)]
+pub struct Fonts {
+    pub default_font: Handle<Font>,
+}

@@ -1,8 +1,12 @@
 [package]
-name = "bevy_github_ci_template"
+name = "bevy_jam_3"
 version = "0.1.0"
 edition = "2021"
-license = "MIT OR Apache-2.0"
+license = "MIT"
+authors = ["Luiz Chagas Jardim <luizchagasjardim@gmail.com>, Jorge Pinto Sousa <jorge.pinto.sousa@proton.me>"]
+description = "Game made for Bevy Jam 3"
+keywords = ["bevy jam 3", "side effect"]
 
 [dependencies]
 bevy = "0.10"
+rand = "0.8.5"
