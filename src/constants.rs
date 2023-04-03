@@ -14,3 +14,5 @@ pub const SHOOT_RADIUS_COLOR: Color = Color::Rgba {
     blue: 0.8,
     alpha: 0.6,
 };
+
+pub const STARTING_MONEY: u128 = 30;
