@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::assets::{Fonts, Sprites};
+use crate::constants::{BUTTON_COLOR, CLICKED_COLOR, DEACTIVATED_COLOR, HOVERED_COLOR};
 use crate::state::game::money::{Money, TowerCost};
 use crate::state::game::player::Player;
 use crate::state::AppState;
@@ -18,11 +19,6 @@ impl Plugin for Hud {
 
 #[derive(Component)]
 struct BuyButton;
-
-const BUTTON_COLOR: Color = Color::DARK_GRAY;
-const HOVERED_COLOR: Color = Color::GREEN;
-const CLICKED_COLOR: Color = Color::LIME_GREEN;
-const DEACTIVATED_COLOR: Color = Color::ORANGE_RED;
 
 #[derive(Component)]
 struct BuyText;
