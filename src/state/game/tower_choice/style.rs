@@ -45,7 +45,7 @@ pub fn tower_selection_button(sprite: &Handle<Image>) -> ButtonBundle {
         ..default()
     }
 }
-pub fn side_effect_text(side_effect: SideEffect, font: &Handle<Font>) -> TextBundle {
+pub fn side_effect_text(side_effect: &SideEffect, font: &Handle<Font>) -> TextBundle {
     let color = match side_effect.get_type() {
         SideEffectType::Good => Color::GREEN,
         SideEffectType::Bad => Color::RED,

@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 
 use crate::assets::Sprites;
+use crate::constants::*;
 use crate::state::game::bullet::{Bullet, BULLET_SPEED};
 use crate::state::game::damage::Damage;
 use crate::state::game::enemy::Enemy;
 use crate::state::game::health::Health;
-use crate::state::game::money::Money;
 use crate::state::game::movement::Velocity;
-use crate::state::game::player::Player;
 use crate::state::game::tower::Tower;
+use crate::state::game::tower_choice::SideEffects;
 use crate::state::AppState;
 
 pub(super) struct Shooting;
@@ -33,10 +33,12 @@ fn shoot(
     mut commands: Commands,
     sprites: Res<Sprites>,
     time: Res<Time>,
-    mut towers: Query<(&Transform, &ShootRadius, &mut ShootTimer), With<Tower>>,
+    mut towers: Query<(&Transform, &ShootRadius, &mut ShootTimer, &SideEffects), With<Tower>>,
     enemies: Query<(&Transform, &Velocity), With<Enemy>>,
 ) {
-    for (tower_transform, tower_shoot_radius, mut tower_shoot_timer) in towers.iter_mut() {
+    for (tower_transform, tower_shoot_radius, mut tower_shoot_timer, side_effects) in
+        towers.iter_mut()
+    {
         if tower_shoot_timer.tick(time.delta()).finished() {
             let distance_to_tower = |enemy_transform: &&Transform| {
                 (enemy_transform.translation - tower_transform.translation).length()
@@ -73,16 +75,19 @@ fn shoot(
                 let vy = if y1 < y2 { vy_solution1 } else { vy_solution2 };
                 let velocity = Velocity::new(vx, vy);
                 tower_shoot_timer.reset();
-                commands
-                    .spawn(SpriteBundle {
-                        texture: sprites.bullet.clone(),
-                        transform: Transform::from_translation(tower_transform.translation)
-                            .with_scale(Vec3::splat(0.05)),
-                        ..Default::default()
-                    })
+                let mut bullet = commands.spawn(SpriteBundle {
+                    texture: sprites.bullet.clone(),
+                    transform: Transform::from_translation(tower_transform.translation)
+                        .with_scale(Vec3::splat(0.05)),
+                    ..Default::default()
+                });
+                bullet
                     .insert(velocity)
                     .insert(Damage::new(1.0))
                     .insert(Bullet);
+                for side_effect in side_effects.iter() {
+                    side_effect.insert_into(&mut bullet);
+                }
             }
         }
     }
@@ -90,24 +95,17 @@ fn shoot(
 
 fn enemy_bullet_collision(
     mut commands: Commands,
-    mut enemies: Query<(Entity, &Transform, &mut Health), With<Enemy>>,
-    mut money: Query<&mut Money, With<Player>>,
+    mut enemies: Query<(&Transform, &mut Health), With<Enemy>>,
     bullets: Query<(Entity, &Transform, &Damage), With<Bullet>>,
 ) {
-    for (enemy, enemy_transform, mut enemy_health) in enemies.iter_mut() {
+    for (enemy_transform, mut enemy_health) in enemies.iter_mut() {
         for (bullet, bullet_transform, bullet_damage) in bullets.iter() {
-            let bullet_size = 5.0; //TODO: this is a guess
-            let enemy_size = 6.0 * bullet_size; //TODO: also a guess
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();
-            if distance_between_centers <= enemy_size + bullet_size {
+            if distance_between_centers <= ENEMY_SIZE + BULLET_SIZE {
                 commands.entity(bullet).despawn();
                 *enemy_health -= bullet_damage;
             }
-        }
-        if enemy_health.is_dead() {
-            *money.single_mut() += Money::for_killing_enemy();
-            commands.entity(enemy).despawn();
         }
     }
 }

@@ -4,7 +4,9 @@ use std::time::Duration;
 use crate::assets::Sprites;
 use crate::state::game::damage::Damage;
 use crate::state::game::health::Health;
+use crate::state::game::money::Money;
 use crate::state::game::movement::Velocity;
+use crate::state::game::player::Player;
 use crate::state::AppState;
 use rand::Rng;
 
@@ -13,7 +15,8 @@ pub(super) struct EnemyPlugin;
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(SpawnTimer(Timer::from_seconds(8.0, TimerMode::Repeating)))
-            .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)));
+            .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)))
+            .add_system(enemy_death.in_set(OnUpdate(AppState::Game)));
     }
 }
 
@@ -66,5 +69,18 @@ fn spawn_enemy(
         let rng = &mut rand::thread_rng();
         let delay = rng.gen_range(1.0..3.0); // magic delay lol
         timer.set_duration(Duration::from_secs_f32(delay));
+    }
+}
+
+fn enemy_death(
+    mut commands: Commands,
+    mut money: Query<&mut Money, With<Player>>,
+    enemies: Query<(Entity, &Health), With<Enemy>>,
+) {
+    for (enemy, enemy_health) in enemies.iter() {
+        if enemy_health.is_dead() {
+            *money.single_mut() += Money::for_killing_enemy(); //TODO: enemy should have its own money component
+            commands.entity(enemy).despawn();
+        }
     }
 }

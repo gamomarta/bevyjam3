@@ -27,13 +27,16 @@ pub struct TowerSelectionScreen;
 
 #[derive(Clone, Component)]
 pub struct TowerCreationEvent {
-    pub side_effects: Vec<SideEffect>,
+    pub side_effects: SideEffects,
 }
+
+#[derive(Clone, Component, Deref, DerefMut)]
+pub struct SideEffects(Vec<SideEffect>);
 
 impl TowerCreationEvent {
     fn random() -> Self {
         TowerCreationEvent {
-            side_effects: (0..2).map(|_| SideEffect::random()).collect(),
+            side_effects: SideEffects((0..2).map(|_| SideEffect::random()).collect()),
         }
     }
 }
@@ -52,10 +55,7 @@ fn generate_towers(mut commands: Commands, sprites: Res<Sprites>, fonts: Res<Fon
                             .spawn(tower_selection_button(&sprites.tower))
                             .insert(TowerButton)
                             .insert(tower_creation_event.clone());
-                        // for side_effect in &tower_creation_event.side_effects {
-                        //     side_effect.insert_into(&mut button);
-                        // }
-                        for side_effect in tower_creation_event.side_effects {
+                        for side_effect in tower_creation_event.side_effects.iter() {
                             panel.spawn(side_effect_text(side_effect, &fonts.default_font));
                         }
                     });

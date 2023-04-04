@@ -34,12 +34,12 @@ fn spawn_tower_plan(
     mut tower_creation_event_reader: EventReader<TowerCreationEvent>,
 ) {
     for tower_creation_event in tower_creation_event_reader.iter() {
-        let mut tower_entity = commands.spawn(SpriteBundle {
-            texture: sprites.tower.clone(),
-            transform: Transform::from_scale(Vec3::splat(TOWER_SPRITE_SCALE)),
-            ..Default::default()
-        });
-        tower_entity
+        commands
+            .spawn(SpriteBundle {
+                texture: sprites.tower.clone(),
+                transform: Transform::from_scale(Vec3::splat(TOWER_SPRITE_SCALE)),
+                ..Default::default()
+            })
             .insert(TowerPlan)
             .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
             .insert(ShootRadius(DEFAULT_SHOOT_RADIUS))
@@ -57,10 +57,8 @@ fn spawn_tower_plan(
                         ..default()
                     })
                     .insert(ShootRadiusImage);
-            });
-        for side_effect in tower_creation_event.side_effects.iter() {
-            side_effect.insert_into(&mut tower_entity);
-        }
+            })
+            .insert(tower_creation_event.side_effects.clone());
         // TODO: move to OnUpdate(AppState::TowerPlacing)
         // commented because of borrow checker issues, and because it will be moved
         // check if towere intersects with the enemy path

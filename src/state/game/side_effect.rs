@@ -2,6 +2,8 @@ use bevy::ecs::system::EntityCommands;
 use bevy::prelude::*;
 use rand_derive::Rand;
 
+use crate::state::AppState;
+
 mod extra_damage;
 use extra_damage::ExtraDamageSideEffect;
 mod strengthen;
@@ -10,8 +12,9 @@ use strengthen::StrengthenSideEffect;
 pub(super) struct SideEffectPlugin;
 
 impl Plugin for SideEffectPlugin {
-    fn build(&self, _app: &mut App) {
-        //TODO
+    fn build(&self, app: &mut App) {
+        app.add_system(extra_damage::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(strengthen::apply.in_set(OnUpdate(AppState::Game)));
     }
 }
 

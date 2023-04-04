@@ -8,6 +8,8 @@ pub mod layers {
 }
 
 pub const TOWER_SPRITE_SCALE: f32 = 0.5;
+pub const BULLET_SIZE: f32 = 5.0; //TODO: this is a guess
+pub const ENEMY_SIZE: f32 = 6.0 * BULLET_SIZE; //TODO: also a guess
 
 pub const DEFAULT_SHOOT_RADIUS: f32 = 400.0;
 
