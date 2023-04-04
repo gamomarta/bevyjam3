@@ -10,3 +10,4 @@ keywords = ["bevy jam 3", "side effect"]
 [dependencies]
 bevy = "0.10"
 rand = "0.8.5"
+bevy_kira_audio = "0.15.0"
