@@ -1,4 +1,4 @@
-use crate::assets::Sprites;
+use crate::assets::{Fonts, Sprites};
 use crate::constants::*;
 use crate::state::AppState;
 use bevy::prelude::*;
@@ -19,7 +19,7 @@ pub struct TowerButton;
 #[derive(Component)]
 pub struct TowerSelectionScreen;
 
-fn generate_towers(mut commands: Commands, sprites: Res<Sprites>) {
+fn generate_towers(mut commands: Commands, sprites: Res<Sprites>, fonts: Res<Fonts>) {
     commands
         .spawn(NodeBundle {
             style: Style {
@@ -40,20 +40,47 @@ fn generate_towers(mut commands: Commands, sprites: Res<Sprites>) {
             ..default()
         })
         .insert(TowerSelectionScreen)
-        .with_children(|parent| {
+        .with_children(|screen| {
             for _ in 0..NUMBER_OF_TOWERS_TO_GENERATE {
-                parent
-                    .spawn(ButtonBundle {
+                screen
+                    .spawn(NodeBundle {
                         style: Style {
-                            size: Size::new(Val::Px(100.0), Val::Px(100.0)),
+                            flex_direction: FlexDirection::Column,
                             align_items: AlignItems::Center,
                             ..default()
                         },
-                        background_color: BackgroundColor::from(BUTTON_COLOR),
-                        image: UiImage::from(sprites.tower.clone()),
                         ..default()
                     })
-                    .insert(TowerButton);
+                    .with_children(|parent| {
+                        parent
+                            .spawn(ButtonBundle {
+                                style: Style {
+                                    size: Size::new(Val::Px(100.0), Val::Px(100.0)),
+                                    align_items: AlignItems::Center,
+                                    ..default()
+                                },
+                                background_color: BackgroundColor::from(BUTTON_COLOR),
+                                image: UiImage::from(sprites.tower.clone()),
+                                ..default()
+                            })
+                            .insert(TowerButton);
+                        parent.spawn(TextBundle::from_section(
+                            "Good side effect text",
+                            TextStyle {
+                                font: fonts.default_font.clone(),
+                                font_size: 15.0,
+                                color: Color::GREEN,
+                            },
+                        ));
+                        parent.spawn(TextBundle::from_section(
+                            "Bad side effect text",
+                            TextStyle {
+                                font: fonts.default_font.clone(),
+                                font_size: 15.0,
+                                color: Color::RED,
+                            },
+                        ));
+                    });
             }
         });
 }
