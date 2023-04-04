@@ -40,6 +40,7 @@ fn load(
     sprites.tower = load_sprite("icon.png");
     sprites.bullet = load_sprite("icon.png");
     sprites.enemy = load_sprite("icon.png");
+    sprites.goal = load_sprite("icon.png");
 
     let mut load_font = |path| load_asset(&asset_server, &mut assets_loading, path);
     fonts.default_font = load_font("Kenney Future.ttf");

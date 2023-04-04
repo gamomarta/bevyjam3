@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use std::time::Duration;
 
 use crate::assets::Sprites;
+use crate::state::game::damage::Damage;
 use crate::state::game::health::Health;
 use crate::state::game::movement::Velocity;
 use crate::state::AppState;
@@ -60,6 +61,7 @@ fn spawn_enemy(
             })
             .insert(Velocity::new(10.0, 0.0))
             .insert(Health::new(10.0))
+            .insert(Damage::new(3.0))
             .insert(Enemy);
         let rng = &mut rand::thread_rng();
         let delay = rng.gen_range(1.0..3.0); // magic delay lol

@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 pub mod layers {
+    pub const GOAL_LAYER: f32 = 1.0;
     pub const TOWER_LAYER: f32 = 1.0;
 }
 
