@@ -22,16 +22,16 @@ jobs:
       - uses: little-core-labs/get-git-tag@v3.0.1
         id: get_version
       - uses: actions/checkout@v2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
         with:
           targets: wasm32-unknown-unknown
       - name: install wasm-bindgen-cli
         run: |
-          cargo +nightly install wasm-bindgen-cli
+          cargo install wasm-bindgen-cli
 
       - name: Build
         run: |
-          cargo +nightly build --release --target wasm32-unknown-unknown
+          cargo build --release --target wasm32-unknown-unknown
 
       - name: Prepare package
         run: |
@@ -67,7 +67,7 @@ jobs:
       - uses: little-core-labs/get-git-tag@v3.0.1
         id: get_version
       - uses: actions/checkout@v2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
         with:
           targets: x86_64-unknown-linux-gnu
       - name: install dependencies
@@ -76,7 +76,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo +nightly build --release --target x86_64-unknown-linux-gnu
+          cargo build --release --target x86_64-unknown-linux-gnu
 
       - name: Prepare package
         run: |
@@ -113,13 +113,13 @@ jobs:
       - uses: little-core-labs/get-git-tag@v3.0.1
         id: get_version
       - uses: actions/checkout@v2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
         with:
           targets: x86_64-pc-windows-msvc
 
       - name: Build
         run: |
-          cargo +nightly build --release --target x86_64-pc-windows-msvc
+          cargo build --release --target x86_64-pc-windows-msvc
 
       - name: Prepare package
         run: |
@@ -155,7 +155,7 @@ jobs:
       - uses: little-core-labs/get-git-tag@v3.0.1
         id: get_version
       - uses: actions/checkout@v2
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
         with:
           targets: x86_64-apple-darwin
       - name: Environment Setup
@@ -165,7 +165,7 @@ jobs:
 
       - name: Build
         run: |
-          cargo +nightly build --release --target x86_64-apple-darwin
+          cargo build --release --target x86_64-apple-darwin
 
       - name: Prepare Package
         run: |
