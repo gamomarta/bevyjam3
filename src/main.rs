@@ -11,6 +11,7 @@ mod assets;
 mod constants;
 mod state;
 mod utils;
+mod sound;
 
 fn main() {
     App::new()
