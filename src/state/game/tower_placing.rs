@@ -4,9 +4,9 @@ use bevy::sprite::MaterialMesh2dBundle;
 use crate::assets::Sprites;
 use crate::constants::layers::*;
 use crate::constants::*;
-use crate::state::game::enemy::Enemy;
 use crate::state::game::shooting::{ShootRadius, ShootRadiusImage, ShootTimer};
 use crate::state::game::tower::Tower;
+use crate::state::game::tower_choice::TowerCreationEvent;
 use crate::state::AppState;
 use crate::utils::*;
 
@@ -29,47 +29,56 @@ fn spawn_tower_plan(
     sprites: Res<Sprites>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
-    enemies_query: Query<&Transform, (With<Enemy>, Without<TowerPlan>)>,
-    mut query: Query<&mut Transform, (With<TowerPlan>, Without<Enemy>)>,
+    // enemies_query: Query<&Transform, (With<Enemy>, Without<TowerPlan>)>,
+    // mut query: Query<&mut Transform, (With<TowerPlan>, Without<Enemy>)>,
+    mut tower_creation_event_reader: EventReader<TowerCreationEvent>,
 ) {
-    let tower_entity = commands
-        .spawn(SpriteBundle {
-            texture: sprites.tower.clone(),
-            transform: Transform::from_scale(Vec3::splat(TOWER_SPRITE_SCALE)),
-            ..Default::default()
-        })
-        .insert(TowerPlan)
-        .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
-        .insert(ShootRadius(DEFAULT_SHOOT_RADIUS))
-        .with_children(|tower| {
-            tower
-                .spawn(MaterialMesh2dBundle {
-                    mesh: meshes
-                        .add(shape::Circle::new(DEFAULT_SHOOT_RADIUS / TOWER_SPRITE_SCALE).into())
-                        .into(),
-                    material: materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR)),
-                    transform: Transform::from_translation(2.0 * Vec3::Z),
-                    ..default()
-                })
-                .insert(ShootRadiusImage);
-        })
-        .id();
-    // check if towere intersects with the enemy path
-    let mut is_path_obstructed = false;
-    if let Ok(tower_transform) = query.get_component_mut::<Transform>(tower_entity) {
-        for enemy_transform in enemies_query.iter() {
-            // should check the circule probably
-            let distance_to_enemy = enemy_transform.translation.x - tower_transform.translation.x;
-            if distance_to_enemy < 500.0 {
-                //magic lol
-                is_path_obstructed = true;
-                break;
-            }
-        }
-    }
-    if is_path_obstructed {
-        commands.entity(tower_entity).despawn();
-        //get the money backz
+    for tower_creation_event in tower_creation_event_reader.iter() {
+        commands
+            .spawn(SpriteBundle {
+                texture: sprites.tower.clone(),
+                transform: Transform::from_scale(Vec3::splat(TOWER_SPRITE_SCALE)),
+                ..Default::default()
+            })
+            .insert(TowerPlan)
+            .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
+            .insert(ShootRadius(DEFAULT_SHOOT_RADIUS))
+            .with_children(|tower| {
+                tower
+                    .spawn(MaterialMesh2dBundle {
+                        mesh: meshes
+                            .add(
+                                shape::Circle::new(DEFAULT_SHOOT_RADIUS / TOWER_SPRITE_SCALE)
+                                    .into(),
+                            )
+                            .into(),
+                        material: materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR)),
+                        transform: Transform::from_translation(2.0 * Vec3::Z),
+                        ..default()
+                    })
+                    .insert(ShootRadiusImage);
+            })
+            .insert(tower_creation_event.side_effects.clone());
+        // TODO: move to OnUpdate(AppState::TowerPlacing)
+        // commented because of borrow checker issues, and because it will be moved
+        // check if towere intersects with the enemy path
+        // let mut is_path_obstructed = false;
+        // if let Ok(tower_transform) = query.get_component_mut::<Transform>(tower_entity.id()) {
+        //     for enemy_transform in enemies_query.iter() {
+        //         // should check the circule probably
+        //         let distance_to_enemy =
+        //             enemy_transform.translation.x - tower_transform.translation.x;
+        //         if distance_to_enemy < 500.0 {
+        //             //magic lol
+        //             is_path_obstructed = true;
+        //             break;
+        //         }
+        //     }
+        // }
+        // if is_path_obstructed {
+        //     commands.entity(tower_entity.id()).despawn();
+        //     //get the money backz
+        // }
     }
 }
 

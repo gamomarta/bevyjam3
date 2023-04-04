@@ -1,7 +1,7 @@
-
 use bevy::prelude::*;
 
 use crate::constants::*;
+use crate::state::game::side_effect::*;
 
 pub fn tower_selection_screen() -> NodeBundle {
     NodeBundle {
@@ -45,19 +45,17 @@ pub fn tower_selection_button(sprite: &Handle<Image>) -> ButtonBundle {
         ..default()
     }
 }
-fn side_effect_text(text: &str, font: &Handle<Font>, color: Color) -> TextBundle {
+pub fn side_effect_text(side_effect: &SideEffect, font: &Handle<Font>) -> TextBundle {
+    let color = match side_effect.get_type() {
+        SideEffectType::Good => Color::GREEN,
+        SideEffectType::Bad => Color::RED,
+    };
     TextBundle::from_section(
-        text,
+        side_effect.get_description(),
         TextStyle {
             font: font.clone(),
             font_size: 15.0,
             color,
         },
     )
-}
-pub fn good_side_effect_text(text: &str, font: &Handle<Font>) -> TextBundle {
-    side_effect_text(text, font, Color::GREEN)
-}
-pub fn bad_side_effect_text(text: &str, font: &Handle<Font>) -> TextBundle {
-    side_effect_text(text, font, Color::RED)
 }
