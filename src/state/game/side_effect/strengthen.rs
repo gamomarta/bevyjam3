@@ -1,12 +1,10 @@
 use crate::constants::*;
-use crate::state::game::bullet::Bullet;
 use bevy::prelude::*;
 
 use crate::state::game::damage::Damage;
 use crate::state::game::enemy::Enemy;
-use crate::state::game::health::Health;
-use crate::state::game::side_effect::extra_damage::ExtraDamageSideEffect;
-use crate::state::game::side_effect::{SideEffectTrait, SideEffectType};
+use crate::state::game::goal::Goal;
+use crate::state::game::side_effect::*;
 
 #[derive(Component)]
 pub struct StrengthenSideEffect {
@@ -31,15 +29,15 @@ impl Default for StrengthenSideEffect {
 }
 
 pub(super) fn apply(
-    mut enemies: Query<(&Transform, &mut Health), With<Enemy>>,
-    bullets: Query<(&Transform, &ExtraDamageSideEffect), With<Bullet>>,
+    mut enemies: Query<(&Transform, &mut Damage), With<Enemy>>,
+    bullets: Query<(&Transform, &StrengthenSideEffect), With<Goal>>,
 ) {
-    for (enemy_transform, mut enemy_health) in enemies.iter_mut() {
-        for (bullet_transform, extra_damage) in bullets.iter() {
+    for (enemy_transform, mut enemy_damage) in enemies.iter_mut() {
+        for (bullet_transform, strengthen) in bullets.iter() {
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();
             if distance_between_centers <= ENEMY_SIZE + BULLET_SIZE {
-                *enemy_health -= &extra_damage.damage;
+                *enemy_damage += &strengthen.damage;
             }
         }
     }
