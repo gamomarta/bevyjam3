@@ -8,7 +8,6 @@ use bevy::prelude::*;
 
 mod assets;
 mod constants;
-mod sound;
 mod state;
 mod utils;
 
@@ -17,6 +16,5 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(assets::Assets)
         .add_plugin(state::State)
-        .add_plugin(sound::Sound)
         .run();
 }

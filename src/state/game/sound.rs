@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::assets::Music;
 use crate::state::AppState;
 
-pub struct Sound;
+pub(super) struct Sound;
 
 impl Plugin for Sound {
     fn build(&self, app: &mut App) {
