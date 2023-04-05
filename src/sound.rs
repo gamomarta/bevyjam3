@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-// use crate::assets::*;
+use crate::assets::Music;
 use crate::state::AppState;
 
 pub struct Sound;
@@ -11,11 +11,6 @@ impl Plugin for Sound {
     }
 }
 
-fn game_music(asset_server: Res<AssetServer>, audio: Res<Audio>) {
-    audio.play(asset_server.load("main_theme.ogg"));
+fn game_music(music: Res<Music>, audio: Res<Audio>) {
+    audio.play(music.main_theme.clone());
 }
-
-// TODO: make this work
-// fn game_music(music: Res<Music>, audio: Res<Audio>) {
-//     audio.play(music.main_theme.clone());
-// }

@@ -15,7 +15,7 @@ impl Plugin for Loading {
         app.init_resource::<AssetsLoading>()
             .add_system(load_sprites.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_fonts.in_schedule(OnEnter(AppState::Loading)))
-            .add_system(load_music.in_schedule(OnEnter(AppState::Loading)))
+            .add_system(load_sound.in_schedule(OnEnter(AppState::Loading)))
             .add_system(check_loading.in_set(OnUpdate(AppState::Loading)));
     }
 }
@@ -53,7 +53,7 @@ fn load_fonts(
     fonts.default_font = load_font("Kenney Future.ttf");
 }
 
-fn load_music(
+fn load_sound(
     asset_server: Res<AssetServer>,
     mut assets_loading: ResMut<AssetsLoading>,
     mut music: ResMut<Music>,
