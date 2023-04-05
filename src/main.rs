@@ -17,5 +17,6 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(assets::Assets)
         .add_plugin(state::State)
+        .add_plugin(sound::Sound)
         .run();
 }

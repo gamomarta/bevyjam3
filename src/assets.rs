@@ -26,5 +26,5 @@ pub struct Fonts {
 
 #[derive(Default, Resource)]
 pub struct Music {
-    pub main_theme: Handle<Image>,
+    pub main_theme: Handle<AudioSource>,
 }
