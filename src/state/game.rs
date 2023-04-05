@@ -13,6 +13,7 @@ mod player;
 mod setup;
 mod shooting;
 mod side_effect;
+pub mod sound;
 mod tower;
 mod tower_choice;
 mod tower_placing;
@@ -30,6 +31,7 @@ impl Plugin for Game {
             .add_plugin(setup::Setup)
             .add_plugin(shooting::Shooting)
             .add_plugin(side_effect::SideEffectPlugin)
+            .add_plugin(sound::Sound)
             .add_plugin(tower_choice::TowerChoice)
             .add_plugin(tower_placing::TowerPlacing)
             .add_plugin(tower::TowerPlugin);
