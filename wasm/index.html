@@ -1,35 +1,66 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tranquil General</title>
+    <!-- Material Design colors -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
 
-<body style="margin: 0px;">
-  <!--TODO: make this beautiful. Astro?-->
-  <h1>Tranquil General</h1>
-  <div>
-    <b>OUTBREAK!!!</b><br>
-    People with a mild fungal infection are running towards the hospital.<br>
-    If they get there, they will infect people, and if everyone is sick, they will sneeze for a few days, and that's a losing condition if I ever saw one.<br>
-    Place well-trained doctors armed with experimental pills to <strike>kill</strike> gently treat the infected. But watch out, every medicine has its side effects.
-  </div>
-  <div>
-    How to play: Click around.
-  </div>
-  <div>
-    Credits:<br>
-    <ul>
-      <li>Game design: Jorge Sousa and Luiz Chagas Jardim</li>
-      <li>Programming: Jorge Sousa and Luiz Chagas Jardim, starting from <a href="https://github.com/bevyengine/bevy_github_ci_template">bevy_github_ci_template</a></li>
-      <li>Sprites: Bevy icon</li>
-      <li>Music: The Sound of Silence</li>
-    </ul>
-  </div>
-  <div>
-    Thank you for playing.
-  </div>
-  <script type="module">
-    import './restart-audio-context.js'
-    import init from './bevy_game.js'
-    init()
-  </script>
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        a {
+          color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1 class="center-align grey-text text-darken-2"><span style="color: #f44336;">T</span>ranquil General</h1>
+        <div class="row">
+            <div class="col s12 m12">
+                <div class="card grey lighten-5">
+                    <div class="card-content grey-text text-darken-2">
+                        <b>OUTBREAK!!!</b><br>
+                        People with a mild fungal infection are running towards the hospital.<br>
+                        If they get there, they will infect people, and if everyone is sick, they will sneeze for a few days, and that's a losing condition if I ever saw one.<br>
+                        Place well-trained doctors armed with experimental pills to <span
+                            style="text-decoration: line-through;">kill</span> gently treat the infected. But watch out, every medicine has its side effects.
+                    </div>
+                    <div class="card-content grey-text text-darken-2">
+                        <b>How to play:</b> Click around.
+                    </div>
+                    <div class="card-action" style="padding: 0;">
+                        <canvas id="bevy">
+                          <script type="module">
+                            import './restart-audio-context.js'
+                            import init from './bevy_game.js'
+                            init()
+                          </script>
+                        </canvas>
+                    </div>
+                    <div class="card-content grey-text text-darken-2">
+                        <b>Credits:</b><br>
+                        <ul>
+                            <li><b>Game design:</b><a href="https://github.com/sousajo-cc"> Jorge Pinto Sousa</a> and <a href="https://github.com/luizchagasjardim">Luiz Chagas Jardim</a></li>
+                            <li><b>Programming:</b><a href="https://github.com/sousajo-cc"> Jorge Pinto Sousa</a> and <a href="https://github.com/luizchagasjardim">Luiz Chagas Jardim</a>, starting from <a href="https://github.com/bevyengine/bevy_github_ci_template">bevy_github_ci_template</a></li>
+                            <li><b>Sprites:</b> Bevy icon</li>
+                            <li><b>Music:</b> The Sound of Silence</li>
+                            <li><b>Webpage:</b><a href="https://github.com/sousajo-cc"> Jorge Pinto Sousa</a> and <a href="https://github.com/luizchagasjardim">Luiz Chagas Jardim</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Material Design scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
-
 </html>
