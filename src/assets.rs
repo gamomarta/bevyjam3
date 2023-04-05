@@ -4,7 +4,9 @@ pub struct Assets;
 
 impl Plugin for Assets {
     fn build(&self, app: &mut App) {
-        app.init_resource::<Sprites>().init_resource::<Fonts>();
+        app.init_resource::<Sprites>()
+            .init_resource::<Fonts>()
+            .init_resource::<Music>();
     }
 }
 
@@ -20,4 +22,9 @@ pub struct Sprites {
 #[derive(Default, Resource)]
 pub struct Fonts {
     pub default_font: Handle<Font>,
+}
+
+#[derive(Default, Resource)]
+pub struct Music {
+    pub main_theme: Handle<Image>,
 }

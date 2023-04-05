@@ -13,7 +13,9 @@ pub(super) struct Loading;
 impl Plugin for Loading {
     fn build(&self, app: &mut App) {
         app.init_resource::<AssetsLoading>()
-            .add_system(load.in_schedule(OnEnter(AppState::Loading)))
+            .add_system(load_sprites.in_schedule(OnEnter(AppState::Loading)))
+            .add_system(load_fonts.in_schedule(OnEnter(AppState::Loading)))
+            .add_system(load_music.in_schedule(OnEnter(AppState::Loading)))
             .add_system(check_loading.in_set(OnUpdate(AppState::Loading)));
     }
 }
@@ -29,11 +31,10 @@ fn load_asset<T: Asset + TypeUuid>(
     handle
 }
 
-fn load(
+fn load_sprites(
     asset_server: Res<AssetServer>,
     mut assets_loading: ResMut<AssetsLoading>,
     mut sprites: ResMut<Sprites>,
-    mut fonts: ResMut<Fonts>,
 ) {
     let mut load_sprite = |path| load_asset(&asset_server, &mut assets_loading, path);
     sprites.bevy_logo = load_sprite("icon.png");
@@ -41,9 +42,24 @@ fn load(
     sprites.bullet = load_sprite("icon.png");
     sprites.enemy = load_sprite("icon.png");
     sprites.goal = load_sprite("icon.png");
+}
 
+fn load_fonts(
+    asset_server: Res<AssetServer>,
+    mut assets_loading: ResMut<AssetsLoading>,
+    mut fonts: ResMut<Fonts>,
+) {
     let mut load_font = |path| load_asset(&asset_server, &mut assets_loading, path);
     fonts.default_font = load_font("Kenney Future.ttf");
+}
+
+fn load_music(
+    asset_server: Res<AssetServer>,
+    mut assets_loading: ResMut<AssetsLoading>,
+    mut music: ResMut<Music>,
+) {
+    let mut load_sound = |path| load_asset(&asset_server, &mut assets_loading, path);
+    music.main_theme = load_sound("main_theme.ogg")
 }
 
 fn check_loading(
