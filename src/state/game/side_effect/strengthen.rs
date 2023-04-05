@@ -16,7 +16,7 @@ impl SideEffectTrait for StrengthenSideEffect {
         SideEffectType::Bad
     }
     fn get_description() -> String {
-        "Enemy does extra damage".to_string()
+        "Infected becomes more infectious".to_string()
     }
 }
 

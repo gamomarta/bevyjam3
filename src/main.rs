@@ -3,7 +3,6 @@
     clippy::too_many_arguments,
     clippy::type_complexity
 )]
-#![feature(core_intrinsics)]
 
 use bevy::prelude::*;
 

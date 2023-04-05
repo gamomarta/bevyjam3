@@ -17,7 +17,7 @@ impl SideEffectTrait for ExtraDamageSideEffect {
         SideEffectType::Good
     }
     fn get_description() -> String {
-        "Tower does extra damage".to_string()
+        "Faster cure".to_string()
     }
 }
 
