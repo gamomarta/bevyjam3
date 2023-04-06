@@ -23,6 +23,7 @@ pub struct Sprites {
 #[derive(Default, Resource)]
 pub struct Materials {
     pub tower_range: Handle<ColorMaterial>,
+    pub tower_invalid: Handle<ColorMaterial>,
 }
 
 #[derive(Default, Resource)]

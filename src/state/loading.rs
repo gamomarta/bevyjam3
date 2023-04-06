@@ -6,7 +6,7 @@ use crate::assets::*;
 use crate::state::AppState;
 
 mod assets_loading;
-use crate::constants::SHOOT_RADIUS_COLOR;
+use crate::constants::*;
 use assets_loading::AssetsLoading;
 
 pub(super) struct Loading;
@@ -69,6 +69,7 @@ fn create_color_materials(
     mut materials: ResMut<Materials>,
 ) {
     materials.tower_range = color_materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR));
+    materials.tower_invalid = color_materials.add(ColorMaterial::from(TOWER_INVALID_COLOR));
 }
 
 fn check_loading(
