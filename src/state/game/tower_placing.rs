@@ -1,10 +1,12 @@
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
-use crate::assets::Sprites;
+use crate::assets::*;
 use crate::constants::layers::*;
 use crate::constants::*;
-use crate::state::game::shooting::{ShootRadius, ShootRadiusImage, ShootTimer};
+use crate::state::game::enemy::Enemy;
+use crate::state::game::goal::Goal;
+use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
 use crate::state::AppState;
@@ -16,21 +18,45 @@ impl Plugin for TowerPlacing {
     fn build(&self, app: &mut App) {
         app.add_system(spawn_tower_plan.in_schedule(OnEnter(AppState::TowerPlacing)))
             .add_system(update_plan_position.in_set(OnUpdate(AppState::TowerPlacing)))
-            .add_system(click.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(check_enemy_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(check_goal_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(check_tower_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(
+                range_color
+                    .in_set(OnUpdate(AppState::TowerPlacing))
+                    .after(check_enemy_overlap)
+                    .after(check_goal_overlap)
+                    .after(check_tower_overlap),
+            )
+            .add_system(
+                click
+                    .in_set(OnUpdate(AppState::TowerPlacing))
+                    .after(check_enemy_overlap)
+                    .after(check_goal_overlap)
+                    .after(check_tower_overlap),
+            )
             .add_system(cleanup.in_schedule(OnExit(AppState::TowerPlacing)));
     }
 }
 
-#[derive(Component)]
-struct TowerPlan;
+#[derive(Component, Default)]
+struct TowerPlan {
+    enemy_overlap: bool,
+    goal_overlap: bool,
+    tower_overlap: bool,
+}
+
+impl TowerPlan {
+    fn is_valid(&self) -> bool {
+        !(self.enemy_overlap || self.goal_overlap || self.tower_overlap)
+    }
+}
 
 fn spawn_tower_plan(
     mut commands: Commands,
     sprites: Res<Sprites>,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    // enemies_query: Query<&Transform, (With<Enemy>, Without<TowerPlan>)>,
-    // mut query: Query<&mut Transform, (With<TowerPlan>, Without<Enemy>)>,
+    materials: Res<Materials>,
     mut tower_creation_event_reader: EventReader<TowerCreationEvent>,
 ) {
     for tower_creation_event in tower_creation_event_reader.iter() {
@@ -40,7 +66,7 @@ fn spawn_tower_plan(
                 transform: Transform::from_scale(Vec3::splat(TOWER_SPRITE_SCALE)),
                 ..Default::default()
             })
-            .insert(TowerPlan)
+            .insert(TowerPlan::default())
             .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
             .insert(ShootRadius(DEFAULT_SHOOT_RADIUS))
             .with_children(|tower| {
@@ -52,33 +78,13 @@ fn spawn_tower_plan(
                                     .into(),
                             )
                             .into(),
-                        material: materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR)),
+                        material: materials.tower_range.clone(),
                         transform: Transform::from_translation(2.0 * Vec3::Z),
                         ..default()
                     })
                     .insert(ShootRadiusImage);
             })
             .insert(tower_creation_event.side_effects.clone());
-        // TODO: move to OnUpdate(AppState::TowerPlacing)
-        // commented because of borrow checker issues, and because it will be moved
-        // check if towere intersects with the enemy path
-        // let mut is_path_obstructed = false;
-        // if let Ok(tower_transform) = query.get_component_mut::<Transform>(tower_entity.id()) {
-        //     for enemy_transform in enemies_query.iter() {
-        //         // should check the circule probably
-        //         let distance_to_enemy =
-        //             enemy_transform.translation.x - tower_transform.translation.x;
-        //         if distance_to_enemy < 500.0 {
-        //             //magic lol
-        //             is_path_obstructed = true;
-        //             break;
-        //         }
-        //     }
-        // }
-        // if is_path_obstructed {
-        //     commands.entity(tower_entity.id()).despawn();
-        //     //get the money backz
-        // }
     }
 }
 
@@ -96,9 +102,70 @@ fn update_plan_position(
     tower_plan.translation = cursor_position.extend(TOWER_LAYER);
 }
 
-fn click(mouse: Res<Input<MouseButton>>, mut next_state: ResMut<NextState<AppState>>) {
-    if mouse.just_pressed(MouseButton::Left) {
-        next_state.set(AppState::Game);
+fn check_enemy_overlap(
+    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
+    enemies: Query<&Transform, With<Enemy>>,
+) {
+    for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
+        tower_plan.enemy_overlap = enemies.iter().any(|enemy_transform| {
+            (enemy_transform.translation - tower_transform.translation).length()
+                < TOWER_SIZE + ENEMY_SIZE
+        })
+    }
+}
+
+fn check_goal_overlap(
+    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
+    goals: Query<&Transform, With<Goal>>,
+) {
+    for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
+        tower_plan.goal_overlap = goals.iter().any(|goal_transform| {
+            (goal_transform.translation - tower_transform.translation).length()
+                < TOWER_SIZE + GOAL_SIZE
+        })
+    }
+}
+
+fn check_tower_overlap(
+    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
+    towers: Query<&Transform, With<Tower>>,
+) {
+    for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
+        tower_plan.tower_overlap = towers.iter().any(|transform| {
+            (transform.translation - tower_transform.translation).length() < TOWER_SIZE * 2.0
+        })
+    }
+}
+
+fn range_color(
+    materials: Res<Materials>,
+    tower_plan: Query<(&TowerPlan, &Children)>,
+    mut ranges: Query<&mut Handle<ColorMaterial>, With<ShootRadiusImage>>,
+) {
+    for (tower_plan, children) in tower_plan.iter() {
+        for &child in children {
+            let Ok(mut range_color) = ranges.get_mut(child) else { continue; };
+            *range_color = if tower_plan.is_valid() {
+                materials.tower_range.clone()
+            } else {
+                materials.tower_invalid.clone()
+            };
+        }
+    }
+}
+
+fn click(
+    mouse: Res<Input<MouseButton>>,
+    mut next_state: ResMut<NextState<AppState>>,
+    tower_plans: Query<&TowerPlan>,
+) {
+    for tower_plan in tower_plans.iter() {
+        if !tower_plan.is_valid() {
+            continue;
+        }
+        if mouse.just_pressed(MouseButton::Left) {
+            next_state.set(AppState::Game);
+        }
     }
 }
 
