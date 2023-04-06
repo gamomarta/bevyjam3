@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
-use crate::assets::Sprites;
+use crate::assets::*;
 use crate::constants::layers::*;
 use crate::constants::*;
-use crate::state::game::shooting::{ShootRadius, ShootRadiusImage, ShootTimer};
+use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
 use crate::state::AppState;
@@ -29,9 +29,7 @@ fn spawn_tower_plan(
     mut commands: Commands,
     sprites: Res<Sprites>,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-    // enemies_query: Query<&Transform, (With<Enemy>, Without<TowerPlan>)>,
-    // mut query: Query<&mut Transform, (With<TowerPlan>, Without<Enemy>)>,
+    materials: Res<Materials>,
     mut tower_creation_event_reader: EventReader<TowerCreationEvent>,
 ) {
     for tower_creation_event in tower_creation_event_reader.iter() {
@@ -53,7 +51,7 @@ fn spawn_tower_plan(
                                     .into(),
                             )
                             .into(),
-                        material: materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR)),
+                        material: materials.tower_range.clone(),
                         transform: Transform::from_translation(2.0 * Vec3::Z),
                         ..default()
                     })
