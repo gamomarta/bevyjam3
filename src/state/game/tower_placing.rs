@@ -5,6 +5,7 @@ use crate::assets::*;
 use crate::constants::layers::*;
 use crate::constants::*;
 use crate::state::game::enemy::Enemy;
+use crate::state::game::goal::Goal;
 use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
@@ -17,12 +18,19 @@ impl Plugin for TowerPlacing {
     fn build(&self, app: &mut App) {
         app.add_system(spawn_tower_plan.in_schedule(OnEnter(AppState::TowerPlacing)))
             .add_system(update_plan_position.in_set(OnUpdate(AppState::TowerPlacing)))
-            .add_system(click.in_set(OnUpdate(AppState::TowerPlacing)))
-            .add_system(validate_position.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(check_enemy_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(check_goal_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
             .add_system(
                 range_color
                     .in_set(OnUpdate(AppState::TowerPlacing))
-                    .after(validate_position),
+                    .after(check_enemy_overlap)
+                    .after(check_goal_overlap),
+            )
+            .add_system(
+                click
+                    .in_set(OnUpdate(AppState::TowerPlacing))
+                    .after(check_enemy_overlap)
+                    .after(check_goal_overlap),
             )
             .add_system(cleanup.in_schedule(OnExit(AppState::TowerPlacing)));
     }
@@ -30,7 +38,14 @@ impl Plugin for TowerPlacing {
 
 #[derive(Component, Default)]
 struct TowerPlan {
-    is_valid: bool,
+    enemy_overlap: bool,
+    goal_overlap: bool,
+}
+
+impl TowerPlan {
+    fn is_valid(&self) -> bool {
+        !self.enemy_overlap && !self.goal_overlap
+    }
 }
 
 fn spawn_tower_plan(
@@ -83,14 +98,26 @@ fn update_plan_position(
     tower_plan.translation = cursor_position.extend(TOWER_LAYER);
 }
 
-fn validate_position(
+fn check_enemy_overlap(
     mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
     enemies: Query<&Transform, With<Enemy>>,
 ) {
     for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
-        tower_plan.is_valid = !enemies.iter().any(|enemy_transform| {
+        tower_plan.enemy_overlap = enemies.iter().any(|enemy_transform| {
             (enemy_transform.translation - tower_transform.translation).length()
                 < TOWER_SIZE + ENEMY_SIZE
+        })
+    }
+}
+
+fn check_goal_overlap(
+    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
+    goals: Query<&Transform, With<Goal>>,
+) {
+    for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
+        tower_plan.goal_overlap = goals.iter().any(|goal_transform| {
+            (goal_transform.translation - tower_transform.translation).length()
+                < TOWER_SIZE + GOAL_SIZE
         })
     }
 }
@@ -103,7 +130,7 @@ fn range_color(
     for (tower_plan, children) in tower_plan.iter() {
         for &child in children {
             let Ok(mut range_color) = ranges.get_mut(child) else { continue; };
-            *range_color = if tower_plan.is_valid {
+            *range_color = if tower_plan.is_valid() {
                 materials.tower_range.clone()
             } else {
                 materials.tower_invalid.clone()
@@ -118,7 +145,7 @@ fn click(
     tower_plans: Query<&TowerPlan>,
 ) {
     for tower_plan in tower_plans.iter() {
-        if !tower_plan.is_valid {
+        if !tower_plan.is_valid() {
             continue;
         }
         if mouse.just_pressed(MouseButton::Left) {
