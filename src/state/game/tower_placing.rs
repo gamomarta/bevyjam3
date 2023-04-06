@@ -20,17 +20,20 @@ impl Plugin for TowerPlacing {
             .add_system(update_plan_position.in_set(OnUpdate(AppState::TowerPlacing)))
             .add_system(check_enemy_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
             .add_system(check_goal_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(check_tower_overlap.in_set(OnUpdate(AppState::TowerPlacing)))
             .add_system(
                 range_color
                     .in_set(OnUpdate(AppState::TowerPlacing))
                     .after(check_enemy_overlap)
-                    .after(check_goal_overlap),
+                    .after(check_goal_overlap)
+                    .after(check_tower_overlap),
             )
             .add_system(
                 click
                     .in_set(OnUpdate(AppState::TowerPlacing))
                     .after(check_enemy_overlap)
-                    .after(check_goal_overlap),
+                    .after(check_goal_overlap)
+                    .after(check_tower_overlap),
             )
             .add_system(cleanup.in_schedule(OnExit(AppState::TowerPlacing)));
     }
@@ -40,11 +43,12 @@ impl Plugin for TowerPlacing {
 struct TowerPlan {
     enemy_overlap: bool,
     goal_overlap: bool,
+    tower_overlap: bool,
 }
 
 impl TowerPlan {
     fn is_valid(&self) -> bool {
-        !self.enemy_overlap && !self.goal_overlap
+        !(self.enemy_overlap || self.goal_overlap || self.tower_overlap)
     }
 }
 
@@ -118,6 +122,17 @@ fn check_goal_overlap(
         tower_plan.goal_overlap = goals.iter().any(|goal_transform| {
             (goal_transform.translation - tower_transform.translation).length()
                 < TOWER_SIZE + GOAL_SIZE
+        })
+    }
+}
+
+fn check_tower_overlap(
+    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
+    towers: Query<&Transform, With<Tower>>,
+) {
+    for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
+        tower_plan.tower_overlap = towers.iter().any(|transform| {
+            (transform.translation - tower_transform.translation).length() < TOWER_SIZE * 2.0
         })
     }
 }
