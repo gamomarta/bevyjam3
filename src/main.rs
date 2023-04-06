@@ -13,7 +13,7 @@ mod utils;
 
 fn main() {
     App::new()
-        .add_plugin(assets::Assets)
+        .add_plugin(assets::AssetsPlugin)
         .add_plugin(state::State)
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {

@@ -17,6 +17,7 @@ impl Plugin for TowerPlacing {
         app.add_system(spawn_tower_plan.in_schedule(OnEnter(AppState::TowerPlacing)))
             .add_system(update_plan_position.in_set(OnUpdate(AppState::TowerPlacing)))
             .add_system(click.in_set(OnUpdate(AppState::TowerPlacing)))
+            .add_system(validate_position.in_set(OnUpdate(AppState::TowerPlacing)))
             .add_system(cleanup.in_schedule(OnExit(AppState::TowerPlacing)));
     }
 }
@@ -94,6 +95,13 @@ fn update_plan_position(
     let Some(cursor_position) = cursor_coordinates_to_world_coordinates(window, camera) else { return; };
 
     tower_plan.translation = cursor_position.extend(TOWER_LAYER);
+}
+
+fn validate_position(// mut radii: Query<&mut Handle<ColorMaterial>, With<ShootRadius>>,
+) {
+    // for mut radius_color in radii.iter_mut() {
+    //     *radius_color = Color::RED;
+    // }
 }
 
 fn click(mouse: Res<Input<MouseButton>>, mut next_state: ResMut<NextState<AppState>>) {

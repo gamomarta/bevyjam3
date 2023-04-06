@@ -6,6 +6,7 @@ use crate::assets::*;
 use crate::state::AppState;
 
 mod assets_loading;
+use crate::constants::SHOOT_RADIUS_COLOR;
 use assets_loading::AssetsLoading;
 
 pub(super) struct Loading;
@@ -16,6 +17,7 @@ impl Plugin for Loading {
             .add_system(load_sprites.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_fonts.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_sound.in_schedule(OnEnter(AppState::Loading)))
+            .add_system(create_color_materials.in_schedule(OnEnter(AppState::Loading)))
             .add_system(check_loading.in_set(OnUpdate(AppState::Loading)));
     }
 }
@@ -60,6 +62,13 @@ fn load_sound(
 ) {
     let mut load_sound = |path| load_asset(&asset_server, &mut assets_loading, path);
     music.main_theme = load_sound("main_theme.ogg")
+}
+
+fn create_color_materials(
+    mut color_materials: ResMut<Assets<ColorMaterial>>,
+    mut materials: ResMut<Materials>,
+) {
+    materials.tower_range = color_materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR));
 }
 
 fn check_loading(
