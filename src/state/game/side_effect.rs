@@ -9,6 +9,8 @@ mod extra_damage;
 use extra_damage::ExtraDamageSideEffect;
 mod insta_kill;
 use insta_kill::InstaKill;
+mod speed_up;
+use speed_up::SpeedUp;
 mod strengthen;
 use strengthen::StrengthenSideEffect;
 
@@ -19,6 +21,7 @@ impl Plugin for SideEffectPlugin {
         app.add_system(duplicate::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(extra_damage::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(insta_kill::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(speed_up::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(strengthen::apply.in_set(OnUpdate(AppState::Game)));
     }
 }
@@ -30,6 +33,8 @@ pub enum SideEffect {
 
     InstaKill,
     Duplicate,
+
+    SpeedUp,
     //TODO: Knockback/Knockforward, SlowDown/SpeedUp,
 }
 
@@ -37,11 +42,12 @@ impl SideEffect {
     pub fn random() -> Self {
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        match rng.gen_range(0..4) {
+        match rng.gen_range(0..5) {
             0 => SideEffect::ExtraDamage,
             1 => SideEffect::Strengthen,
             2 => SideEffect::InstaKill,
             3 => SideEffect::Duplicate,
+            4 => SideEffect::SpeedUp,
             _ => unreachable!(),
         }
     }
@@ -51,6 +57,7 @@ impl SideEffect {
             SideEffect::Strengthen => commands.insert(StrengthenSideEffect::default()),
             SideEffect::InstaKill => commands.insert(InstaKill::default()),
             SideEffect::Duplicate => commands.insert(Duplicate::default()),
+            SideEffect::SpeedUp => commands.insert(SpeedUp::default()),
         };
     }
     pub fn get_type(&self) -> SideEffectType {
@@ -59,6 +66,7 @@ impl SideEffect {
             SideEffect::Strengthen => StrengthenSideEffect::get_type(),
             SideEffect::InstaKill => InstaKill::get_type(),
             SideEffect::Duplicate => Duplicate::get_type(),
+            SideEffect::SpeedUp => SpeedUp::get_type(),
         }
     }
     pub fn get_description(&self) -> String {
@@ -67,6 +75,7 @@ impl SideEffect {
             SideEffect::Strengthen => StrengthenSideEffect::get_description(),
             SideEffect::InstaKill => InstaKill::get_description(),
             SideEffect::Duplicate => Duplicate::get_description(),
+            SideEffect::SpeedUp => SpeedUp::get_description(),
         }
     }
 }

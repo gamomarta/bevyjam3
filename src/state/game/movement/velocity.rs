@@ -15,6 +15,9 @@ impl Velocity {
     pub fn y(&self) -> f32 {
         self.0.y
     }
+    pub fn set_speed(&mut self, new_speed: f32) {
+        self.0 *= new_speed / self.0.length()
+    }
 }
 
 impl Mul<Duration> for &Velocity {

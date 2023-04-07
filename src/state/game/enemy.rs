@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use std::time::Duration;
 
 use crate::assets::Sprites;
-use crate::constants::ENEMY_SPRITE_SCALE;
+use crate::constants::{ENEMY_SPEED, ENEMY_SPRITE_SCALE};
 use crate::state::game::damage::Damage;
 use crate::state::game::health::Health;
 use crate::state::game::money::Money;
@@ -63,7 +63,7 @@ fn spawn_enemy(
                 .with_scale(Vec3::splat(ENEMY_SPRITE_SCALE)),
                 ..Default::default()
             })
-            .insert(Velocity::new(10.0, 0.0))
+            .insert(Velocity::new(ENEMY_SPEED, 0.0))
             .insert(Health::new(10.0))
             .insert(Damage::new(3.0))
             .insert(Enemy);
