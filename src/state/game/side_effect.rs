@@ -9,6 +9,8 @@ mod extra_damage;
 use extra_damage::ExtraDamageSideEffect;
 mod insta_kill;
 use insta_kill::InstaKill;
+mod slow_down;
+use slow_down::SlowDown;
 mod speed_up;
 use speed_up::SpeedUp;
 mod strengthen;
@@ -21,7 +23,12 @@ impl Plugin for SideEffectPlugin {
         app.add_system(duplicate::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(extra_damage::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(insta_kill::apply.in_set(OnUpdate(AppState::Game)))
-            .add_system(speed_up::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(slow_down::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(
+                speed_up::apply
+                    .in_set(OnUpdate(AppState::Game))
+                    .before(slow_down::apply),
+            )
             .add_system(strengthen::apply.in_set(OnUpdate(AppState::Game)));
     }
 }
@@ -34,20 +41,22 @@ pub enum SideEffect {
     InstaKill,
     Duplicate,
 
+    SlowDown,
     SpeedUp,
-    //TODO: Knockback/Knockforward, SlowDown/SpeedUp,
+    //TODO: Knockback/Knockforward, Freeze/Teleport, Smallen/Enlarge
 }
 
 impl SideEffect {
     pub fn random() -> Self {
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        match rng.gen_range(0..5) {
+        match rng.gen_range(0..6) {
             0 => SideEffect::ExtraDamage,
             1 => SideEffect::Strengthen,
             2 => SideEffect::InstaKill,
             3 => SideEffect::Duplicate,
-            4 => SideEffect::SpeedUp,
+            4 => SideEffect::SlowDown,
+            5 => SideEffect::SpeedUp,
             _ => unreachable!(),
         }
     }
@@ -57,6 +66,7 @@ impl SideEffect {
             SideEffect::Strengthen => commands.insert(StrengthenSideEffect::default()),
             SideEffect::InstaKill => commands.insert(InstaKill::default()),
             SideEffect::Duplicate => commands.insert(Duplicate::default()),
+            SideEffect::SlowDown => commands.insert(SlowDown::default()),
             SideEffect::SpeedUp => commands.insert(SpeedUp::default()),
         };
     }
@@ -66,6 +76,7 @@ impl SideEffect {
             SideEffect::Strengthen => StrengthenSideEffect::get_type(),
             SideEffect::InstaKill => InstaKill::get_type(),
             SideEffect::Duplicate => Duplicate::get_type(),
+            SideEffect::SlowDown => SlowDown::get_type(),
             SideEffect::SpeedUp => SpeedUp::get_type(),
         }
     }
@@ -75,6 +86,7 @@ impl SideEffect {
             SideEffect::Strengthen => StrengthenSideEffect::get_description(),
             SideEffect::InstaKill => InstaKill::get_description(),
             SideEffect::Duplicate => Duplicate::get_description(),
+            SideEffect::SlowDown => SlowDown::get_description(),
             SideEffect::SpeedUp => SpeedUp::get_description(),
         }
     }

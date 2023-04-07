@@ -49,5 +49,5 @@ pub const CLICKED_COLOR: Color = Color::LIME_GREEN;
 pub const DEACTIVATED_COLOR: Color = Color::ORANGE_RED;
 
 pub const ENEMY_SPEED: f32 = 20.0;
-// pub const SLOW_ENEMY_SPEED: f32 = ENEMY_SPEED / 3.0;
+pub const SLOW_ENEMY_SPEED: f32 = ENEMY_SPEED / 3.0;
 pub const FAST_ENEMY_SPEED: f32 = ENEMY_SPEED * 3.0;
