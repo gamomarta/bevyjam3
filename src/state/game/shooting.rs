@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::assets::Sprites;
+use crate::constants::layers::{BULLET_LAYER, TOWER_LAYER};
 use crate::constants::*;
 use crate::state::game::bullet::{Bullet, BULLET_SPEED};
 use crate::state::game::damage::Damage;
@@ -93,8 +94,10 @@ fn shoot(
                 tower_shoot_timer.reset();
                 let mut bullet = commands.spawn(SpriteBundle {
                     texture: sprites.bullet.clone(),
-                    transform: Transform::from_translation(tower_transform.translation)
-                        .with_scale(Vec3::splat(BULLET_SPRITE_SCALE)),
+                    transform: Transform::from_translation(
+                        tower_transform.translation + (BULLET_LAYER - TOWER_LAYER) * Vec3::Z,
+                    )
+                    .with_scale(Vec3::splat(BULLET_SPRITE_SCALE)),
                     ..Default::default()
                 });
                 bullet

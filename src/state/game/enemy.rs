@@ -17,6 +17,7 @@ impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(SpawnTimer(Timer::from_seconds(1.0, TimerMode::Repeating)))
             .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)))
+            .add_system(vertical_bounds.in_set(OnUpdate(AppState::Game)))
             .add_system(enemy_death.in_set(OnUpdate(AppState::Game)));
     }
 }
@@ -55,6 +56,14 @@ fn spawn_enemy(
             .insert(Enemy);
         let delay = rng.gen_range(1.0..3.0); // magic delay lol
         timer.set_duration(Duration::from_secs_f32(delay));
+    }
+}
+
+fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, With<Enemy>>) {
+    let bound = window.single().height() / 2.0;
+
+    for mut enemy_transform in enemies.iter_mut() {
+        enemy_transform.translation.y = enemy_transform.translation.y.clamp(-bound, bound);
     }
 }
 
