@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use std::ops::AddAssign;
 
-#[derive(Component)]
+#[derive(Clone, Component)]
 pub struct Damage(f32);
 
 impl Damage {

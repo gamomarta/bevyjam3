@@ -2,7 +2,7 @@ use crate::state::game::damage::Damage;
 use bevy::prelude::*;
 use std::ops::SubAssign;
 
-#[derive(Component)]
+#[derive(Clone, Component)]
 pub struct Health(f32);
 
 impl Health {

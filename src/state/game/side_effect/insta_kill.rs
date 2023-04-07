@@ -22,10 +22,10 @@ impl SideEffectTrait for InstaKill {
 
 pub(super) fn apply(
     mut enemies: Query<(&Transform, &mut Health), With<Enemy>>,
-    bullets: Query<(&Transform, &InstaKill), With<Bullet>>,
+    bullets: Query<&Transform, (With<Bullet>, With<InstaKill>)>,
 ) {
     for (enemy_transform, mut enemy_health) in enemies.iter_mut() {
-        for (bullet_transform, _) in bullets.iter() {
+        for bullet_transform in bullets.iter() {
             let mut rng = rand::thread_rng();
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();

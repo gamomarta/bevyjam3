@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use std::ops::Mul;
 use std::time::Duration;
 
-#[derive(Component)]
+#[derive(Clone, Component)]
 pub struct Velocity(Vec3);
 
 impl Velocity {
