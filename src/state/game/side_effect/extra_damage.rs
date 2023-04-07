@@ -17,7 +17,7 @@ impl SideEffectTrait for ExtraDamageSideEffect {
         SideEffectType::Good
     }
     fn get_description() -> String {
-        "Faster cure".to_string()
+        "Increased effectiveness".to_string()
     }
 }
 

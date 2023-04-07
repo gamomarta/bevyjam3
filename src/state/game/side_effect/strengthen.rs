@@ -16,7 +16,7 @@ impl SideEffectTrait for StrengthenSideEffect {
         SideEffectType::Bad
     }
     fn get_description() -> String {
-        "Infected becomes more infectious".to_string()
+        "May increase infection rate".to_string()
     }
 }
 
@@ -30,7 +30,7 @@ impl Default for StrengthenSideEffect {
 
 pub(super) fn apply(
     mut enemies: Query<(&Transform, &mut Damage), With<Enemy>>,
-    bullets: Query<(&Transform, &StrengthenSideEffect), With<Goal>>,
+    bullets: Query<(&Transform, &StrengthenSideEffect), With<Goal>>, /*TODO: WHAT? goal, but bullet size?*/
 ) {
     for (enemy_transform, mut enemy_damage) in enemies.iter_mut() {
         for (bullet_transform, strengthen) in bullets.iter() {

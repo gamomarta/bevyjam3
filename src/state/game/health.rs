@@ -9,6 +9,9 @@ impl Health {
     pub fn new(value: f32) -> Self {
         Health(value)
     }
+    pub fn die(&mut self) {
+        self.0 = 0.0;
+    }
     pub fn is_dead(&self) -> bool {
         self.0 <= 0.0
     }
