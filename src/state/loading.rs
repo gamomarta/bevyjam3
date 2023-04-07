@@ -68,6 +68,7 @@ fn create_color_materials(
     mut color_materials: ResMut<Assets<ColorMaterial>>,
     mut materials: ResMut<Materials>,
 ) {
+    materials.goal = color_materials.add(ColorMaterial::from(GOAL_COLOR));
     materials.tower_range = color_materials.add(ColorMaterial::from(SHOOT_RADIUS_COLOR));
     materials.tower_invalid = color_materials.add(ColorMaterial::from(TOWER_INVALID_COLOR));
 }

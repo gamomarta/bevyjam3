@@ -1,8 +1,9 @@
 use bevy::prelude::*;
+use bevy::sprite::MaterialMesh2dBundle;
 
-use crate::assets::Sprites;
-use crate::constants::layers::GOAL_LAYER;
-use crate::constants::GOAL_SPRITE_SCALE;
+use crate::assets::Materials;
+use crate::constants::layers::*;
+use crate::constants::*;
 use crate::state::game::health::Health;
 use crate::state::AppState;
 
@@ -18,16 +19,27 @@ impl Plugin for GoalPlugin {
 #[derive(Component)]
 pub struct Goal;
 
-fn spawn_goal(mut commands: Commands, sprites: Res<Sprites>) {
+fn spawn_goal(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, materials: Res<Materials>) {
     commands
-        .spawn(SpriteBundle {
-            transform: Transform::from_translation(Vec3::new(500.0, 0.0, GOAL_LAYER))
-                .with_scale(Vec3::splat(GOAL_SPRITE_SCALE)),
-            texture: sprites.goal.clone(),
-            ..Default::default()
+        .spawn(MaterialMesh2dBundle {
+            mesh: meshes
+                .add(
+                    shape::Quad::new(Vec2::new(GOAL_WIDTH, WINDOW_HEIGHT)) //TODO
+                        .into(),
+                )
+                .into(),
+            material: materials.goal.clone(),
+            transform: Transform::from_translation(Vec3::new(
+                GOAL_POSITION + GOAL_WIDTH / 2.0,
+                0.0,
+                GOAL_LAYER,
+            )),
+            visibility: Visibility::Hidden,
+            ..default()
         })
-        .insert(Health::new(10.0))
+        .insert(Health::new(GOAL_HEALTH))
         .insert(Goal);
+    dbg!(GOAL_POSITION);
 }
 
 fn lose(goals: Query<With<Goal>>, mut next_state: ResMut<NextState<AppState>>) {

@@ -5,7 +5,6 @@ use crate::assets::*;
 use crate::constants::layers::*;
 use crate::constants::*;
 use crate::state::game::enemy::Enemy;
-use crate::state::game::goal::Goal;
 use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
@@ -116,15 +115,9 @@ fn check_enemy_overlap(
     }
 }
 
-fn check_goal_overlap(
-    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
-    goals: Query<&Transform, With<Goal>>,
-) {
+fn check_goal_overlap(mut tower_plans: Query<(&mut TowerPlan, &Transform)>) {
     for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
-        tower_plan.goal_overlap = goals.iter().any(|goal_transform| {
-            (goal_transform.translation - tower_transform.translation).length()
-                < TOWER_RADIUS + GOAL_SIZE
-        })
+        tower_plan.goal_overlap = tower_transform.translation.x > GOAL_POSITION - TOWER_RADIUS;
     }
 }
 

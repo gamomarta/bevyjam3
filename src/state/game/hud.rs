@@ -50,7 +50,7 @@ fn display_hud(mut commands: Commands, fonts: Res<Fonts>, sprites: Res<Sprites>)
             parent
                 .spawn(
                     TextBundle::from_section(
-                        "Money:",
+                        "Budget:",
                         TextStyle {
                             font: fonts.default_font.clone(),
                             font_size: 30.0,
@@ -77,7 +77,7 @@ fn display_hud(mut commands: Commands, fonts: Res<Fonts>, sprites: Res<Sprites>)
                     button
                         .spawn(
                             TextBundle::from_section(
-                                "Buy:",
+                                "Hire:",
                                 TextStyle {
                                     font: fonts.default_font.clone(),
                                     font_size: 30.0,
@@ -99,7 +99,7 @@ fn update_money(
     let Some(mut money_text) = money_display.sections.first_mut() else { return; };
     let money = money.single();
 
-    money_text.value = format!("Money: {}", money);
+    money_text.value = format!("Budget: {}", money);
 }
 
 fn update_price(
@@ -110,7 +110,7 @@ fn update_price(
     let Some(mut buy_text) = buy_text.sections.first_mut() else { return; };
     let price = price.single();
 
-    buy_text.value = format!("Buy: {}", price);
+    buy_text.value = format!("Hire: {}", price);
 }
 
 fn buy(

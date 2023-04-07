@@ -1,3 +1,4 @@
+use crate::constants::GOAL_POSITION;
 use bevy::prelude::*;
 
 use crate::state::game::damage::Damage;
@@ -17,13 +18,11 @@ impl Plugin for EnemyGoal {
 fn enemy_reaches_goal(
     mut commands: Commands,
     enemies: Query<(Entity, &Transform, &Damage), With<Enemy>>,
-    mut goals: Query<(Entity, &Transform, &mut Health), With<Goal>>,
+    mut goals: Query<(Entity, &mut Health), With<Goal>>,
 ) {
     for (enemy, enemy_transform, damage) in enemies.iter() {
-        for (goal, goal_transform, mut health) in goals.iter_mut() {
-            if (enemy_transform.translation - goal_transform.translation).length() < 100.0
-            /*TODO: Magic guess*/
-            {
+        for (goal, mut health) in goals.iter_mut() {
+            if enemy_transform.translation.x > GOAL_POSITION {
                 *health -= damage;
                 commands.entity(enemy).despawn();
                 if health.is_dead() {
