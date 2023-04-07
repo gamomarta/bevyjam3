@@ -42,8 +42,8 @@ fn load_sprites(
     sprites.bevy_logo = load_sprite("icon.png");
     sprites.tower = load_sprite("doctor.png");
     sprites.bullet = load_sprite("pill.png");
-    sprites.enemy = load_sprite("icon.png");
-    sprites.goal = load_sprite("icon.png");
+    sprites.enemy = load_sprite("infected.png");
+    sprites.goal = load_sprite("girl.png");
 }
 
 fn load_fonts(
