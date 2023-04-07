@@ -7,12 +7,15 @@ pub mod layers {
     pub const TOWER_LAYER: f32 = 1.0;
 }
 
-pub const TOWER_SPRITE_RADIUS: f32 = 750.0;
+pub const TOWER_SPRITE_RADIUS: f32 = 1500.0 / 2.0;
 pub const TOWER_SPRITE_SCALE: f32 = 0.1;
 pub const TOWER_RADIUS: f32 = TOWER_SPRITE_RADIUS * TOWER_SPRITE_SCALE;
 
-pub const BULLET_SIZE: f32 = 5.0; //TODO: this is a guess
-pub const ENEMY_SIZE: f32 = 6.0 * BULLET_SIZE; //TODO: also a guess
+pub const BULLET_SPRITE_RADIUS: f32 = 1360.0 / 2.0;
+pub const BULLET_SPRITE_SCALE: f32 = 0.03;
+pub const BULLET_SIZE: f32 = BULLET_SPRITE_RADIUS * BULLET_SPRITE_SCALE;
+
+pub const ENEMY_SIZE: f32 = 30.0; //TODO: also a guess
 pub const GOAL_SIZE: f32 = 100.0; //TODO: also also a guess
 
 pub const DEFAULT_SHOOT_RADIUS: f32 = 400.0;

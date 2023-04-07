@@ -41,7 +41,7 @@ fn load_sprites(
     let mut load_sprite = |path| load_asset(&asset_server, &mut assets_loading, path);
     sprites.bevy_logo = load_sprite("icon.png");
     sprites.tower = load_sprite("doctor.png");
-    sprites.bullet = load_sprite("icon.png");
+    sprites.bullet = load_sprite("pill.png");
     sprites.enemy = load_sprite("icon.png");
     sprites.goal = load_sprite("icon.png");
 }

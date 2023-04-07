@@ -78,7 +78,7 @@ fn shoot(
                 let mut bullet = commands.spawn(SpriteBundle {
                     texture: sprites.bullet.clone(),
                     transform: Transform::from_translation(tower_transform.translation)
-                        .with_scale(Vec3::splat(0.05)),
+                        .with_scale(Vec3::splat(BULLET_SPRITE_SCALE)),
                     ..Default::default()
                 });
                 bullet
