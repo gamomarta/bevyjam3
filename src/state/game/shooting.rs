@@ -9,6 +9,7 @@ use crate::state::game::health::Health;
 use crate::state::game::movement::Velocity;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::SideEffects;
+use crate::state::game::wobble::ShootWobble;
 use crate::state::AppState;
 
 pub(super) struct Shooting;
@@ -33,11 +34,25 @@ fn shoot(
     mut commands: Commands,
     sprites: Res<Sprites>,
     time: Res<Time>,
-    mut towers: Query<(&Transform, &ShootRadius, &mut ShootTimer, &SideEffects), With<Tower>>,
+    mut towers: Query<
+        (
+            &Transform,
+            &ShootRadius,
+            &mut ShootTimer,
+            &mut ShootWobble,
+            &SideEffects,
+        ),
+        With<Tower>,
+    >,
     enemies: Query<(&Transform, &Velocity), With<Enemy>>,
 ) {
-    for (tower_transform, tower_shoot_radius, mut tower_shoot_timer, side_effects) in
-        towers.iter_mut()
+    for (
+        tower_transform,
+        tower_shoot_radius,
+        mut tower_shoot_timer,
+        mut shoot_wobble,
+        side_effects,
+    ) in towers.iter_mut()
     {
         if tower_shoot_timer.tick(time.delta()).finished() {
             let distance_to_tower = |enemy_transform: &&Transform| {
@@ -74,6 +89,7 @@ fn shoot(
                 let vy_solution2 = (v * v - vx * vx).sqrt();
                 let vy = if y1 < y2 { vy_solution1 } else { vy_solution2 };
                 let velocity = Velocity::new(vx, vy);
+                shoot_wobble.unpause();
                 tower_shoot_timer.reset();
                 let mut bullet = commands.spawn(SpriteBundle {
                     texture: sprites.bullet.clone(),

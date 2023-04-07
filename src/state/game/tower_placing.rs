@@ -9,6 +9,7 @@ use crate::state::game::goal::Goal;
 use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
+use crate::state::game::wobble::ShootWobble;
 use crate::state::AppState;
 use crate::utils::*;
 
@@ -67,6 +68,7 @@ fn spawn_tower_plan(
                 ..Default::default()
             })
             .insert(TowerPlan::default())
+            .insert(ShootWobble::new())
             .insert(ShootTimer(Timer::from_seconds(0.6, TimerMode::Once)))
             .insert(ShootRadius(DEFAULT_SHOOT_RADIUS))
             .with_children(|tower| {

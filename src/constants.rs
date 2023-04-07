@@ -10,6 +10,7 @@ pub mod layers {
 pub const TOWER_SPRITE_RADIUS: f32 = 1500.0 / 2.0;
 pub const TOWER_SPRITE_SCALE: f32 = 0.1;
 pub const TOWER_RADIUS: f32 = TOWER_SPRITE_RADIUS * TOWER_SPRITE_SCALE;
+pub const TOWER_WOBBLE_DURATION: f32 = 0.15;
 
 pub const BULLET_SPRITE_RADIUS: f32 = 1360.0 / 2.0;
 pub const BULLET_SPRITE_SCALE: f32 = 0.03;
