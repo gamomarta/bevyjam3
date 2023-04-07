@@ -39,7 +39,6 @@ fn spawn_goal(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, material
         })
         .insert(Health::new(GOAL_HEALTH))
         .insert(Goal);
-    dbg!(GOAL_POSITION);
 }
 
 fn lose(goals: Query<With<Goal>>, mut next_state: ResMut<NextState<AppState>>) {

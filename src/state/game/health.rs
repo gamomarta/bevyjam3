@@ -1,8 +1,9 @@
 use crate::state::game::damage::Damage;
 use bevy::prelude::*;
+use std::fmt::Formatter;
 use std::ops::SubAssign;
 
-#[derive(Clone, Component)]
+#[derive(Clone, Component, Debug)]
 pub struct Health(f32);
 
 impl Health {
@@ -14,6 +15,12 @@ impl Health {
     }
     pub fn is_dead(&self) -> bool {
         self.0 <= 0.0
+    }
+}
+
+impl std::fmt::Display for Health {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 

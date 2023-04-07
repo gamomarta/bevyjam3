@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use std::fmt::Formatter;
 use std::ops::AddAssign;
 
 #[derive(Clone, Component)]
@@ -10,6 +11,12 @@ impl Damage {
     }
     pub fn value(&self) -> f32 {
         self.0
+    }
+}
+
+impl std::fmt::Display for Damage {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
