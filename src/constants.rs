@@ -5,6 +5,7 @@ pub const MIN_NUMBER_OF_SIDE_EFFECTS: u8 = 2;
 pub const MAX_NUMBER_OF_SIDE_EFFECTS: u8 = 5;
 
 pub mod layers {
+    pub const ENEMY_LAYER: f32 = 2.0;
     pub const GOAL_LAYER: f32 = 1.0;
     pub const TOWER_LAYER: f32 = 1.0;
 }
