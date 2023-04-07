@@ -1,4 +1,5 @@
 use crate::constants::TOWER_WOBBLE_DURATION;
+use crate::state::game::bullet::Bullet;
 use crate::state::game::tower::Tower;
 use crate::state::AppState;
 use bevy::prelude::*;
@@ -7,7 +8,8 @@ pub(super) struct Wobble;
 
 impl Plugin for Wobble {
     fn build(&self, app: &mut App) {
-        app.add_system(shoot_wobble.in_set(OnUpdate(AppState::Game)));
+        app.add_system(shoot_wobble.in_set(OnUpdate(AppState::Game)))
+            .add_system(bullet_rotation.in_set(OnUpdate(AppState::Game)));
     }
 }
 
@@ -38,5 +40,11 @@ fn shoot_wobble(
         } else {
             Quat::from_axis_angle(Vec3::Z, -wobble.elapsed_secs())
         };
+    }
+}
+
+fn bullet_rotation(mut bullets: Query<&mut Transform, With<Bullet>>, time: Res<Time>) {
+    for mut transform in bullets.iter_mut() {
+        transform.rotation = Quat::from_axis_angle(Vec3::Z, 3.0 * time.elapsed_seconds());
     }
 }
