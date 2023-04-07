@@ -30,6 +30,7 @@ pub enum SideEffect {
 
     InstaKill,
     Duplicate,
+    //TODO: Knockback/Knockforward, SlowDown/SpeedUp,
 }
 
 impl SideEffect {

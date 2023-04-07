@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use rand::Rng;
 
 use crate::assets::*;
 use crate::constants::*;
@@ -35,8 +36,15 @@ pub struct SideEffects(Vec<SideEffect>);
 
 impl TowerCreationEvent {
     fn random() -> Self {
+        let mut rng = rand::thread_rng();
+        let number_of_side_effects =
+            rng.gen_range(MIN_NUMBER_OF_SIDE_EFFECTS..MAX_NUMBER_OF_SIDE_EFFECTS + 1);
         TowerCreationEvent {
-            side_effects: SideEffects((0..2).map(|_| SideEffect::random()).collect()),
+            side_effects: SideEffects(
+                (0..number_of_side_effects)
+                    .map(|_| SideEffect::random())
+                    .collect(),
+            ),
         }
     }
 }

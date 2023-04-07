@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
 pub const NUMBER_OF_TOWERS_TO_GENERATE: u8 = 3;
+pub const MIN_NUMBER_OF_SIDE_EFFECTS: u8 = 2;
+pub const MAX_NUMBER_OF_SIDE_EFFECTS: u8 = 5;
 
 pub mod layers {
     pub const GOAL_LAYER: f32 = 1.0;
