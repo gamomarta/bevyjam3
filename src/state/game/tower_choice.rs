@@ -55,6 +55,14 @@ fn generate_towers(mut commands: Commands, sprites: Res<Sprites>, fonts: Res<Fon
                             .spawn(tower_selection_button(&sprites.tower))
                             .insert(TowerButton)
                             .insert(tower_creation_event.clone());
+                        panel.spawn(TextBundle::from_section(
+                            "Side effects:",
+                            TextStyle {
+                                font: fonts.default_font.clone(),
+                                font_size: 15.0,
+                                color: Color::WHITE,
+                            },
+                        ));
                         for side_effect in tower_creation_event.side_effects.iter() {
                             panel.spawn(side_effect_text(side_effect, &fonts.default_font));
                         }

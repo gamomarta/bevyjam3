@@ -20,6 +20,12 @@ pub fn tower_selection_screen() -> NodeBundle {
             },
             ..default()
         },
+        background_color: BackgroundColor::from(Color::Rgba {
+            red: 0.0,
+            green: 0.0,
+            blue: 0.0,
+            alpha: 0.97,
+        }),
         ..default()
     }
 }
@@ -47,8 +53,18 @@ pub fn tower_selection_button(sprite: &Handle<Image>) -> ButtonBundle {
 }
 pub fn side_effect_text(side_effect: &SideEffect, font: &Handle<Font>) -> TextBundle {
     let color = match side_effect.get_type() {
-        SideEffectType::Good => Color::GREEN,
-        SideEffectType::Bad => Color::RED,
+        SideEffectType::Good => Color::Rgba {
+            red: 0.0,
+            green: 0.8,
+            blue: 0.0,
+            alpha: 1.0,
+        },
+        SideEffectType::Bad => Color::Rgba {
+            red: 0.8,
+            green: 0.0,
+            blue: 0.0,
+            alpha: 1.0,
+        },
     };
     TextBundle::from_section(
         side_effect.get_description(),
