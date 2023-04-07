@@ -61,7 +61,8 @@ fn load_sound(
     mut music: ResMut<Music>,
 ) {
     let mut load_sound = |path| load_asset(&asset_server, &mut assets_loading, path);
-    music.main_theme = load_sound("main_theme.ogg")
+    music.main_theme = load_sound("tranquil.ogg");
+    // music.game_over_theme = load_sound("game_over.ogg");
 }
 
 fn create_color_materials(
