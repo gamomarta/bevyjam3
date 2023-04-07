@@ -39,7 +39,7 @@ fn load_sprites(
     mut sprites: ResMut<Sprites>,
 ) {
     let mut load_sprite = |path| load_asset(&asset_server, &mut assets_loading, path);
-    sprites.bevy_logo = load_sprite("icon.png");
+    sprites.background = load_sprite("background.png");
     sprites.tower = load_sprite("doctor.png");
     sprites.bullet = load_sprite("pill.png");
     sprites.enemy = load_sprite("infected.png");

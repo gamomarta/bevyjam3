@@ -51,7 +51,7 @@ fn spawn_enemy(
                 ..Default::default()
             })
             .insert(Velocity::new(ENEMY_SPEED, 0.0))
-            .insert(Health::new(10.0))
+            .insert(Health::new(ENEMY_HEALTH))
             .insert(Damage::new(3.0))
             .insert(Enemy);
         let delay = rng.gen_range(1.0..3.0); // magic delay lol
@@ -60,7 +60,7 @@ fn spawn_enemy(
 }
 
 fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, With<Enemy>>) {
-    let bound = window.single().height() / 2.0;
+    let bound = window.single().height() / 2.0 - ENEMY_SIZE * 2.0;
 
     for mut enemy_transform in enemies.iter_mut() {
         enemy_transform.translation.y = enemy_transform.translation.y.clamp(-bound, bound);

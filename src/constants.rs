@@ -5,11 +5,20 @@ pub const MIN_NUMBER_OF_SIDE_EFFECTS: u8 = 2;
 pub const MAX_NUMBER_OF_SIDE_EFFECTS: u8 = 5;
 
 pub mod layers {
+    pub const BACKGROUND_LAYER: f32 = 0.0;
     pub const BULLET_LAYER: f32 = 3.0;
     pub const ENEMY_LAYER: f32 = 2.0;
     pub const GOAL_LAYER: f32 = 1.0;
     pub const TOWER_LAYER: f32 = 1.0;
 }
+
+pub const WINDOW_WIDTH: f32 = 1280.0;
+pub const WINDOW_HEIGHT: f32 = 920.0;
+
+pub const BACKGROUND_SPRITE_WIDTH: f32 = 1914.0;
+// pub const BACKGROUND_SPRITE_HEIHT: f32 = 1375.0;
+// pub const BACKGROUND_SPRITE_GOAL_POSITION: f32 = 1600.0;
+pub const BACKGROUND_SPRITE_SCALE: f32 = WINDOW_WIDTH / BACKGROUND_SPRITE_WIDTH;
 
 pub const TOWER_SPRITE_RADIUS: f32 = 1500.0 / 2.0;
 pub const TOWER_SPRITE_SCALE: f32 = 0.1;
@@ -53,3 +62,5 @@ pub const DEACTIVATED_COLOR: Color = Color::ORANGE_RED;
 pub const ENEMY_SPEED: f32 = 20.0;
 pub const SLOW_ENEMY_SPEED: f32 = ENEMY_SPEED / 3.0;
 pub const FAST_ENEMY_SPEED: f32 = ENEMY_SPEED * 3.0;
+
+pub const ENEMY_HEALTH: f32 = 15.0;
