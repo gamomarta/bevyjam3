@@ -109,7 +109,7 @@ fn check_enemy_overlap(
     for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
         tower_plan.enemy_overlap = enemies.iter().any(|enemy_transform| {
             (enemy_transform.translation - tower_transform.translation).length()
-                < TOWER_SIZE + ENEMY_SIZE
+                < TOWER_RADIUS + ENEMY_SIZE
         })
     }
 }
@@ -121,7 +121,7 @@ fn check_goal_overlap(
     for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
         tower_plan.goal_overlap = goals.iter().any(|goal_transform| {
             (goal_transform.translation - tower_transform.translation).length()
-                < TOWER_SIZE + GOAL_SIZE
+                < TOWER_RADIUS + GOAL_SIZE
         })
     }
 }
@@ -132,7 +132,7 @@ fn check_tower_overlap(
 ) {
     for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
         tower_plan.tower_overlap = towers.iter().any(|transform| {
-            (transform.translation - tower_transform.translation).length() < TOWER_SIZE * 2.0
+            (transform.translation - tower_transform.translation).length() < TOWER_RADIUS * 2.0
         })
     }
 }
