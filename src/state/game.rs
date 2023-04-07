@@ -13,10 +13,11 @@ mod player;
 mod setup;
 mod shooting;
 mod side_effect;
-pub mod sound;
+mod sound;
 mod tower;
 mod tower_choice;
 mod tower_placing;
+mod wobble;
 
 pub(super) struct Game;
 
@@ -34,6 +35,7 @@ impl Plugin for Game {
             .add_plugin(sound::Sound)
             .add_plugin(tower_choice::TowerChoice)
             .add_plugin(tower_placing::TowerPlacing)
-            .add_plugin(tower::TowerPlugin);
+            .add_plugin(tower::TowerPlugin)
+            .add_plugin(wobble::Wobble);
     }
 }
