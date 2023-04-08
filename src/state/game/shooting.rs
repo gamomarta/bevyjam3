@@ -1,12 +1,13 @@
 use bevy::prelude::*;
 
-use crate::assets::Sprites;
-use crate::constants::layers::{BULLET_LAYER, TOWER_LAYER};
+use crate::assets::*;
+use crate::constants::layers::*;
 use crate::constants::*;
-use crate::state::game::bullet::{Bullet, BULLET_SPEED};
+use crate::state::game::bullet::*;
 use crate::state::game::damage::Damage;
 use crate::state::game::enemy::Enemy;
 use crate::state::game::health::Health;
+use crate::state::game::hud::damage::display_damage;
 use crate::state::game::movement::Velocity;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::SideEffects;
@@ -114,6 +115,7 @@ fn shoot(
 
 fn enemy_bullet_collision(
     mut commands: Commands,
+    fonts: Res<Fonts>,
     mut enemies: Query<(&Transform, &mut Health), With<Enemy>>,
     bullets: Query<(Entity, &Transform, &Damage), With<Bullet>>,
 ) {
@@ -122,6 +124,12 @@ fn enemy_bullet_collision(
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();
             if distance_between_centers <= ENEMY_SIZE + BULLET_SIZE {
+                display_damage(
+                    bullet_damage,
+                    &enemy_transform.translation,
+                    &mut commands,
+                    fonts.default_font.clone(),
+                );
                 commands.entity(bullet).despawn();
                 *enemy_health -= bullet_damage;
             }

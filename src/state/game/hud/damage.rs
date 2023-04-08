@@ -22,7 +22,7 @@ pub fn display_damage(
             },
             ..default()
         })
-        .insert(DisappearTimer::from_seconds(3.0))
+        .insert(DisappearTimer::from_seconds(0.5))
         .with_children(|parent| {
             parent.spawn(
                 TextBundle::from_section(

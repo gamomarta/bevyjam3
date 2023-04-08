@@ -10,6 +10,7 @@ Game made for Bevy Jam 3
 * Touch Support
 * More Side Effects
 * Sound options
+* Tower upgrade / Global upgrade?
 
 ## Bugs and improvements
 
