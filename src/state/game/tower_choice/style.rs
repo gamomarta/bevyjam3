@@ -10,7 +10,6 @@ pub fn tower_selection_screen() -> NodeBundle {
             size: Size::all(Val::Percent(100.0)),
             align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
-            margin: UiRect::all(Val::Percent(1.0)),
             gap: Size::all(Val::Percent(1.0)),
             position_type: PositionType::Absolute,
             position: UiRect {

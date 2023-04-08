@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 
 use crate::assets::{Fonts, Sprites};
+use crate::components::Player;
 use crate::constants::*;
 use crate::state::game::goal::Goal;
 use crate::state::game::health::Health;
 use crate::state::game::money::{Money, TowerCost};
-use crate::state::game::player::Player;
-use crate::state::AppState;
+use crate::state::{AppState, GameEntity};
 
 pub mod damage;
 pub mod disappear_timer;
@@ -44,7 +44,6 @@ fn display_hud(mut commands: Commands, fonts: Res<Fonts>, sprites: Res<Sprites>)
                 size: Size::width(Val::Percent(10.0)),
                 align_items: AlignItems::FlexEnd,
                 justify_content: JustifyContent::FlexEnd,
-                margin: UiRect::all(Val::Percent(1.0)),
                 gap: Size::all(Val::Percent(1.0)),
                 position_type: PositionType::Absolute,
                 position: UiRect {
@@ -56,6 +55,7 @@ fn display_hud(mut commands: Commands, fonts: Res<Fonts>, sprites: Res<Sprites>)
             },
             ..default()
         })
+        .insert(GameEntity)
         .with_children(|parent| {
             parent
                 .spawn(

@@ -2,13 +2,13 @@ use bevy::prelude::*;
 use std::time::Duration;
 
 use crate::assets::Sprites;
+use crate::components::Player;
 use crate::constants::*;
 use crate::state::game::damage::Damage;
 use crate::state::game::health::Health;
 use crate::state::game::money::Money;
 use crate::state::game::movement::Velocity;
-use crate::state::game::player::Player;
-use crate::state::AppState;
+use crate::state::*;
 use rand::Rng;
 
 pub(super) struct EnemyPlugin;
@@ -56,7 +56,8 @@ fn spawn_enemy(
             .insert(Velocity::new(ENEMY_SPEED, 0.0))
             .insert(Health::new(ENEMY_HEALTH))
             .insert(Damage::new(3.0))
-            .insert(Enemy);
+            .insert(Enemy)
+            .insert(GameEntity);
         let delay = rng.gen_range(1.0..3.0); // magic delay lol
         timer.set_duration(Duration::from_secs_f32(delay));
     }
@@ -73,12 +74,10 @@ fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, Wi
 fn enemy_death(
     sprites: Res<Sprites>,
     mut enemies: Query<(&mut Handle<Image>, &mut Sprite, &mut Velocity, &Health), With<Enemy>>,
-    mut players: Query<&mut Player>,
 ) {
     for (mut enemy_image, mut enemy_sprite, mut enemy_velocity, enemy_health) in enemies.iter_mut()
     {
         if enemy_health.is_dead() {
-            players.single_mut().enemies_killed += 1;
             *enemy_image = sprites.defeated_enemy.clone();
             enemy_sprite.flip_x = true;
             // enemy_sprite.color = Color::Rgba {
@@ -95,11 +94,13 @@ fn enemy_death(
 fn enemy_despawn(
     mut commands: Commands,
     enemies: Query<(Entity, &Transform), With<Enemy>>,
-    mut money: Query<&mut Money, With<Player>>,
+    mut players: Query<(&mut Player, &mut Money)>,
 ) {
+    let (mut player, mut money) = players.single_mut();
     for (enemy, enemy_transform) in enemies.iter() {
         if enemy_transform.translation.x < -WINDOW_WIDTH {
-            *money.single_mut() += Money::for_killing_enemy(); //TODO: enemy should have its own money component
+            player.enemies_killed += 1;
+            *money += Money::for_killing_enemy(); //TODO: enemy should have its own money component
             commands.entity(enemy).despawn();
         }
     }

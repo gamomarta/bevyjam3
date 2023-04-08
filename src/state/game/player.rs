@@ -1,7 +1,8 @@
+use crate::components::Player;
 use bevy::prelude::*;
 
 use crate::state::game::money::{Money, TowerCost};
-use crate::state::AppState;
+use crate::state::*;
 
 pub(super) struct PlayerPlugin;
 
@@ -16,11 +17,6 @@ pub struct PlayerBundle {
     player: Player,
     money: Money,
     price: TowerCost,
-}
-
-#[derive(Component, Default)]
-pub struct Player {
-    pub enemies_killed: u64,
 }
 
 fn spawn_player(mut commands: Commands) {

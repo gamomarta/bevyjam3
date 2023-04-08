@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::constants::*;
 use crate::state::game::damage::Damage;
 use crate::state::game::hud::disappear_timer::DisappearTimer;
+use crate::state::*;
 
 pub fn display_damage(
     value: &Damage,
@@ -23,6 +24,7 @@ pub fn display_damage(
             ..default()
         })
         .insert(DisappearTimer::from_seconds(0.5))
+        .insert(GameEntity)
         .with_children(|parent| {
             parent.spawn(
                 TextBundle::from_section(

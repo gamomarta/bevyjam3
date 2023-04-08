@@ -10,7 +10,7 @@ use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
 use crate::state::game::wobble::ShootWobble;
-use crate::state::AppState;
+use crate::state::*;
 use crate::utils::*;
 
 pub(in crate::state) struct TowerPlacing;
@@ -86,7 +86,8 @@ fn spawn_tower_plan(
                     })
                     .insert(ShootRadiusImage);
             })
-            .insert(tower_creation_event.side_effects.clone());
+            .insert(tower_creation_event.side_effects.clone())
+            .insert(GameEntity);
     }
 }
 

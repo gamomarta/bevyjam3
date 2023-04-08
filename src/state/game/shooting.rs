@@ -12,7 +12,7 @@ use crate::state::game::movement::Velocity;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::SideEffects;
 use crate::state::game::wobble::ShootWobble;
-use crate::state::AppState;
+use crate::state::*;
 
 pub(super) struct Shooting;
 
@@ -104,7 +104,8 @@ fn shoot(
                 bullet
                     .insert(velocity)
                     .insert(Damage::new(1.0))
-                    .insert(Bullet);
+                    .insert(Bullet)
+                    .insert(GameEntity);
                 for side_effect in side_effects.iter() {
                     side_effect.insert_into(&mut bullet);
                 }

@@ -35,4 +35,7 @@ pub struct Fonts {
 #[derive(Default, Resource)]
 pub struct Music {
     pub main_theme: Handle<AudioSource>,
+    pub main_theme_handle: Handle<AudioSink>,
+    pub game_over: Handle<AudioSource>,
+    pub game_over_handle: Handle<AudioSink>,
 }

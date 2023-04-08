@@ -14,12 +14,17 @@ pub(super) struct Loading;
 impl Plugin for Loading {
     fn build(&self, app: &mut App) {
         app.init_resource::<AssetsLoading>()
+            .add_system(spawn_camera.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_sprites.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_fonts.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_sound.in_schedule(OnEnter(AppState::Loading)))
             .add_system(create_color_materials.in_schedule(OnEnter(AppState::Loading)))
             .add_system(check_loading.in_set(OnUpdate(AppState::Loading)));
     }
+}
+
+fn spawn_camera(mut commands: Commands) {
+    commands.spawn(Camera2dBundle::default());
 }
 
 //TODO: could be a method of AssetsLoading -> changed to AssetLoader
@@ -62,7 +67,7 @@ fn load_sound(
 ) {
     let mut load_sound = |path| load_asset(&asset_server, &mut assets_loading, path);
     music.main_theme = load_sound("tranquil.ogg");
-    // music.game_over_theme = load_sound("game_over.ogg");
+    music.game_over = load_sound("game_over.ogg");
 }
 
 fn create_color_materials(
