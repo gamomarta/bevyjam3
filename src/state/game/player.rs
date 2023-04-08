@@ -19,7 +19,9 @@ pub struct PlayerBundle {
 }
 
 #[derive(Component, Default)]
-pub struct Player;
+pub struct Player {
+    pub enemies_killed: u64,
+}
 
 fn spawn_player(mut commands: Commands) {
     commands.spawn(PlayerBundle::default());

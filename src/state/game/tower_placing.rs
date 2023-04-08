@@ -5,6 +5,7 @@ use crate::assets::*;
 use crate::constants::layers::*;
 use crate::constants::*;
 use crate::state::game::enemy::Enemy;
+use crate::state::game::money::TowerCost;
 use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
@@ -153,12 +154,14 @@ fn click(
     mouse: Res<Input<MouseButton>>,
     mut next_state: ResMut<NextState<AppState>>,
     tower_plans: Query<&TowerPlan>,
+    mut tower_cost: Query<&mut TowerCost>,
 ) {
     for tower_plan in tower_plans.iter() {
         if !tower_plan.is_valid() {
             continue;
         }
         if mouse.just_pressed(MouseButton::Left) {
+            tower_cost.single_mut().increase();
             next_state.set(AppState::Game);
         }
     }

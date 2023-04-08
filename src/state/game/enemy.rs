@@ -72,13 +72,13 @@ fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, Wi
 
 fn enemy_death(
     sprites: Res<Sprites>,
-    mut money: Query<&mut Money, With<Player>>,
     mut enemies: Query<(&mut Handle<Image>, &mut Sprite, &mut Velocity, &Health), With<Enemy>>,
+    mut players: Query<&mut Player>,
 ) {
     for (mut enemy_image, mut enemy_sprite, mut enemy_velocity, enemy_health) in enemies.iter_mut()
     {
         if enemy_health.is_dead() {
-            *money.single_mut() += Money::for_killing_enemy(); //TODO: enemy should have its own money component
+            players.single_mut().enemies_killed += 1;
             *enemy_image = sprites.defeated_enemy.clone();
             enemy_sprite.flip_x = true;
             // enemy_sprite.color = Color::Rgba {
@@ -92,9 +92,14 @@ fn enemy_death(
     }
 }
 
-fn enemy_despawn(mut commands: Commands, enemies: Query<(Entity, &Transform), With<Enemy>>) {
+fn enemy_despawn(
+    mut commands: Commands,
+    enemies: Query<(Entity, &Transform), With<Enemy>>,
+    mut money: Query<&mut Money, With<Player>>,
+) {
     for (enemy, enemy_transform) in enemies.iter() {
         if enemy_transform.translation.x < -WINDOW_WIDTH {
+            *money.single_mut() += Money::for_killing_enemy(); //TODO: enemy should have its own money component
             commands.entity(enemy).despawn();
         }
     }

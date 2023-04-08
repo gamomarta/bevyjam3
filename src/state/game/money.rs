@@ -52,3 +52,9 @@ impl Default for TowerCost {
         TowerCost(10)
     }
 }
+
+impl TowerCost {
+    pub fn increase(&mut self) {
+        self.0 *= 2;
+    }
+}

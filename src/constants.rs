@@ -70,4 +70,4 @@ pub const SLOW_ENEMY_SPEED: f32 = ENEMY_SPEED / 3.0;
 pub const FAST_ENEMY_SPEED: f32 = ENEMY_SPEED * 3.0;
 
 pub const GOAL_HEALTH: f32 = 10.0;
-pub const ENEMY_HEALTH: f32 = 15.0;
+pub const ENEMY_HEALTH: f32 = 30.0;
