@@ -45,8 +45,10 @@ fn spawn_enemy(
                 texture: sprites.enemy.clone(),
                 transform: Transform::from_translation(Vec3::new(
                     -window.width() / 2.0 - ENEMY_SIZE,
-                    rng.gen_range(-window.height() + ENEMY_SIZE..window.height() - ENEMY_SIZE),
-                    layers::ENEMY_LAYER,
+                    rng.gen_range(
+                        -window.height() / 2.0 + ENEMY_SIZE..window.height() / 2.0 - ENEMY_SIZE,
+                    ),
+                    layers::ENEMY_LAYER + rng.gen_range(-0.9..0.9),
                 ))
                 .with_scale(Vec3::splat(ENEMY_SPRITE_SCALE)),
                 ..Default::default()
