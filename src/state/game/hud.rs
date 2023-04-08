@@ -8,8 +8,8 @@ use crate::state::game::health::Health;
 use crate::state::game::money::{Money, TowerCost};
 use crate::state::{AppState, GameEntity};
 
-pub mod damage;
 pub mod disappear_timer;
+pub mod popup;
 
 pub(super) struct Hud;
 

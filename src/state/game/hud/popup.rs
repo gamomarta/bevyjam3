@@ -1,12 +1,11 @@
 use bevy::prelude::*;
 
 use crate::constants::*;
-use crate::state::game::damage::Damage;
 use crate::state::game::hud::disappear_timer::DisappearTimer;
 use crate::state::*;
 
-pub fn display_damage(
-    value: &Damage,
+pub fn display_popup<Text: Into<String>>(
+    text: Text,
     position: &Vec3,
     commands: &mut Commands,
     font: Handle<Font>,
@@ -28,7 +27,7 @@ pub fn display_damage(
         .with_children(|parent| {
             parent.spawn(
                 TextBundle::from_section(
-                    format!("{value}"),
+                    text,
                     TextStyle {
                         font,
                         font_size: 30.0,
