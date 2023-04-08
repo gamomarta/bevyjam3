@@ -17,7 +17,7 @@ pub struct Sprites {
     pub tower: Handle<Image>,
     pub bullet: Handle<Image>,
     pub enemy: Handle<Image>,
-    pub goal: Handle<Image>,
+    pub defeated_enemy: Handle<Image>,
 }
 
 #[derive(Default, Resource)]

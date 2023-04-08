@@ -43,7 +43,7 @@ fn load_sprites(
     sprites.tower = load_sprite("doctor.png");
     sprites.bullet = load_sprite("pill.png");
     sprites.enemy = load_sprite("infected.png");
-    sprites.goal = load_sprite("girl.png");
+    sprites.defeated_enemy = load_sprite("girl.png");
 }
 
 fn load_fonts(

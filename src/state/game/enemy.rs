@@ -18,7 +18,8 @@ impl Plugin for EnemyPlugin {
         app.insert_resource(SpawnTimer(Timer::from_seconds(1.0, TimerMode::Repeating)))
             .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)))
             .add_system(vertical_bounds.in_set(OnUpdate(AppState::Game)))
-            .add_system(enemy_death.in_set(OnUpdate(AppState::Game)));
+            .add_system(enemy_death.in_set(OnUpdate(AppState::Game)))
+            .add_system(enemy_despawn.in_set(OnUpdate(AppState::Game)));
     }
 }
 
@@ -68,13 +69,30 @@ fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, Wi
 }
 
 fn enemy_death(
-    mut commands: Commands,
+    sprites: Res<Sprites>,
     mut money: Query<&mut Money, With<Player>>,
-    enemies: Query<(Entity, &Health), With<Enemy>>,
+    mut enemies: Query<(&mut Handle<Image>, &mut Sprite, &mut Velocity, &Health), With<Enemy>>,
 ) {
-    for (enemy, enemy_health) in enemies.iter() {
+    for (mut enemy_image, mut enemy_sprite, mut enemy_velocity, enemy_health) in enemies.iter_mut()
+    {
         if enemy_health.is_dead() {
             *money.single_mut() += Money::for_killing_enemy(); //TODO: enemy should have its own money component
+            *enemy_image = sprites.defeated_enemy.clone();
+            enemy_sprite.flip_x = true;
+            // enemy_sprite.color = Color::Rgba {
+            //     red: 0.2,
+            //     green: 0.3,
+            //     blue: 1.0,
+            //     alpha: 1.0,
+            // };
+            *enemy_velocity = Velocity::new(-1000.0, 0.0);
+        }
+    }
+}
+
+fn enemy_despawn(mut commands: Commands, enemies: Query<(Entity, &Transform), With<Enemy>>) {
+    for (enemy, enemy_transform) in enemies.iter() {
+        if enemy_transform.translation.x < -WINDOW_WIDTH {
             commands.entity(enemy).despawn();
         }
     }

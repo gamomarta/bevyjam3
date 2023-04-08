@@ -9,3 +9,8 @@ Game made for Bevy Jam 3
 * Game Over Screen
 * Touch Support
 * More Side Effects
+* Sound options
+
+## Bugs and improvements
+
+* Music should loop
