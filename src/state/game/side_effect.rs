@@ -6,7 +6,7 @@ use crate::state::AppState;
 mod duplicate;
 use duplicate::Duplicate;
 mod extra_damage;
-use extra_damage::ExtraDamageSideEffect;
+pub use extra_damage::ExtraDamageSideEffect;
 mod insta_kill;
 use insta_kill::InstaKill;
 mod slow_down;
@@ -21,7 +21,6 @@ pub(super) struct SideEffectPlugin;
 impl Plugin for SideEffectPlugin {
     fn build(&self, app: &mut App) {
         app.add_system(duplicate::apply.in_set(OnUpdate(AppState::Game)))
-            .add_system(extra_damage::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(insta_kill::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(slow_down::apply.in_set(OnUpdate(AppState::Game)))
             .add_system(

@@ -11,7 +11,4 @@ Game made for Bevy Jam 3
 * More Side Effects
 * Sound options
 * Tower upgrade / Global upgrade?
-
-## Bugs and improvements
-
-* Music should loop
+* Display Side Effect When Activated

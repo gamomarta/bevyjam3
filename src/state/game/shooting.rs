@@ -9,6 +9,7 @@ use crate::state::game::enemy::Enemy;
 use crate::state::game::health::Health;
 use crate::state::game::hud::popup::display_popup;
 use crate::state::game::movement::Velocity;
+use crate::state::game::side_effect::ExtraDamageSideEffect;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::SideEffects;
 use crate::state::game::wobble::ShootWobble;
@@ -118,21 +119,26 @@ fn enemy_bullet_collision(
     mut commands: Commands,
     fonts: Res<Fonts>,
     mut enemies: Query<(&Transform, &mut Health), With<Enemy>>,
-    bullets: Query<(Entity, &Transform, &Damage), With<Bullet>>,
+    bullets: Query<(Entity, &Transform, &Damage, Option<&ExtraDamageSideEffect>), With<Bullet>>,
 ) {
     for (enemy_transform, mut enemy_health) in enemies.iter_mut() {
-        for (bullet, bullet_transform, bullet_damage) in bullets.iter() {
+        for (bullet, bullet_transform, bullet_damage, extra_damage) in bullets.iter() {
+            let damage = if let Some(extra_damage) = extra_damage {
+                bullet_damage + &extra_damage.damage
+            } else {
+                bullet_damage.clone()
+            };
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();
             if distance_between_centers <= ENEMY_SIZE + BULLET_SIZE {
                 display_popup(
-                    format!("{bullet_damage}"),
+                    format!("{damage}"),
                     &enemy_transform.translation,
                     &mut commands,
                     fonts.default_font.clone(),
                 );
                 commands.entity(bullet).despawn();
-                *enemy_health -= bullet_damage;
+                *enemy_health -= &damage;
             }
         }
     }
