@@ -16,7 +16,7 @@ impl Damage {
 
 impl std::fmt::Display for Damage {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        write!(f, "{}", -self.0)
     }
 }
 
