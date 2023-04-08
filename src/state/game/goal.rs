@@ -49,30 +49,31 @@ fn spawn_goal(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>, material
 
 fn lose(
     goals: Query<With<Goal>>,
+    player: Query<&Player>,
     mut next_state: ResMut<NextState<AppState>>,
     mut game_over_event: EventWriter<GameOverEvent>,
 ) {
     if goals.is_empty() {
         game_over_event.send(GameOverEvent {
             reason: "Everyone in the hospital was infected.".to_string(),
+            enemies_killed: player.single().enemies_killed,
         });
         next_state.set(AppState::GameOver);
     }
 }
 
 fn also_lose(
-    players: Query<(&Money, &TowerCost), With<Player>>,
+    players: Query<(&Money, &TowerCost, &Player)>,
     towers: Query<With<Tower>>,
     mut next_state: ResMut<NextState<AppState>>,
     mut game_over_event: EventWriter<GameOverEvent>,
 ) {
-    if towers.is_empty() {
-        let can_buy_tower = players.iter().all(|(money, price)| money.can_buy(price));
-        if !can_buy_tower {
-            game_over_event.send(GameOverEvent {
-                reason: "No doctors left and no money to hire.".to_string(),
-            });
-            next_state.set(AppState::GameOver);
-        }
+    let (money, price, player) = players.single();
+    if towers.is_empty() && !money.can_buy(price) {
+        game_over_event.send(GameOverEvent {
+            reason: "No doctors left and no money to hire.".to_string(),
+            enemies_killed: player.enemies_killed,
+        });
+        next_state.set(AppState::GameOver);
     }
 }

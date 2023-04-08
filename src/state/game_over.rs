@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use crate::assets::Fonts;
-use crate::components::Player;
 use crate::constants::*;
 use crate::events::GameOverEvent;
 use crate::state::*;
@@ -33,7 +32,6 @@ fn clean_game_entities(mut commands: Commands, game_entities: Query<Entity, With
 fn show_ui(
     mut commands: Commands,
     fonts: Res<Fonts>,
-    player: Query<&Player>,
     mut game_over_event: EventReader<GameOverEvent>,
 ) {
     let game_over_event = game_over_event.iter().next().unwrap();
@@ -75,7 +73,7 @@ fn show_ui(
                 },
             ));
             screen.spawn(TextBundle::from_section(
-                format!("You healed {} people.", player.single().enemies_killed),
+                format!("You healed {} people.", game_over_event.enemies_killed),
                 TextStyle {
                     font: fonts.default_font.clone(),
                     font_size: 30.0,
@@ -122,15 +120,8 @@ fn click(
     }
 }
 
-fn clean_game_over_entities(
-    mut commands: Commands,
-    screens: Query<Entity, With<GameOverScreen>>,
-    players: Query<Entity, With<Player>>,
-) {
+fn clean_game_over_entities(mut commands: Commands, screens: Query<Entity, With<GameOverScreen>>) {
     for screen in screens.iter() {
         commands.entity(screen).despawn_recursive();
-    }
-    for player in players.iter() {
-        commands.entity(player).despawn_recursive();
     }
 }

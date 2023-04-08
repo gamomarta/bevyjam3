@@ -10,5 +10,5 @@ impl Plugin for EventsPlugin {
 
 pub struct GameOverEvent {
     pub reason: String,
-    //     enemies_killed: TODO
+    pub enemies_killed: u64,
 }

@@ -20,5 +20,5 @@ pub struct PlayerBundle {
 }
 
 fn spawn_player(mut commands: Commands) {
-    commands.spawn(PlayerBundle::default());
+    commands.spawn(PlayerBundle::default()).insert(GameEntity);
 }
