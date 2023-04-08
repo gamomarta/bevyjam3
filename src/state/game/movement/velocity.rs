@@ -1,3 +1,4 @@
+use crate::constants::ENEMY_SPEED;
 use bevy::prelude::*;
 use std::ops::Mul;
 use std::time::Duration;
@@ -14,6 +15,12 @@ impl Velocity {
     }
     pub fn y(&self) -> f32 {
         self.0.y
+    }
+    pub fn is_slow(&self) -> bool {
+        self.0.length() < ENEMY_SPEED
+    }
+    pub fn is_fast(&self) -> bool {
+        self.0.length() > ENEMY_SPEED
     }
     pub fn set_speed(&mut self, new_speed: f32) {
         self.0 *= new_speed / self.0.length()

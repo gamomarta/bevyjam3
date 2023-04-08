@@ -1,3 +1,4 @@
+use crate::constants::ENEMY_DAMAGE;
 use bevy::prelude::*;
 use std::fmt::Formatter;
 use std::ops::{Add, AddAssign};
@@ -11,6 +12,9 @@ impl Damage {
     }
     pub fn value(&self) -> f32 {
         self.0
+    }
+    pub fn is_increased(&self) -> bool {
+        self.0 > ENEMY_DAMAGE
     }
 }
 

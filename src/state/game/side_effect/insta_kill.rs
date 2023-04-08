@@ -1,11 +1,13 @@
 use crate::constants::*;
 use bevy::prelude::*;
 
+use crate::assets::Fonts;
 use crate::state::game::bullet::Bullet;
 use rand::Rng;
 
 use crate::state::game::enemy::Enemy;
 use crate::state::game::health::Health;
+use crate::state::game::hud::popup::display_popup;
 use crate::state::game::side_effect::*;
 
 #[derive(Component, Default)]
@@ -21,6 +23,8 @@ impl SideEffectTrait for InstaKill {
 }
 
 pub(super) fn apply(
+    mut commands: Commands,
+    fonts: Res<Fonts>,
     mut enemies: Query<(&Transform, &mut Health), With<Enemy>>,
     bullets: Query<&Transform, (With<Bullet>, With<InstaKill>)>,
 ) {
@@ -30,6 +34,12 @@ pub(super) fn apply(
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();
             if distance_between_centers <= ENEMY_SIZE + BULLET_SIZE && rng.gen_bool(0.05) {
+                display_popup(
+                    "Insta cured!",
+                    &enemy_transform.translation,
+                    &mut commands,
+                    fonts.default_font.clone(),
+                );
                 enemy_health.die();
             }
         }

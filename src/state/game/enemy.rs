@@ -55,7 +55,7 @@ fn spawn_enemy(
             })
             .insert(Velocity::new(ENEMY_SPEED, 0.0))
             .insert(Health::new(ENEMY_HEALTH))
-            .insert(Damage::new(3.0))
+            .insert(Damage::new(ENEMY_DAMAGE))
             .insert(Enemy)
             .insert(GameEntity);
         let delay = rng.gen_range(1.0..3.0); // magic delay lol
