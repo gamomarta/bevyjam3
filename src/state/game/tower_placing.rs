@@ -81,7 +81,7 @@ fn spawn_tower_plan(
                             )
                             .into(),
                         material: materials.tower_range.clone(),
-                        transform: Transform::from_translation(2.0 * Vec3::Z),
+                        transform: Transform::from_translation(RANGE_LAYER * Vec3::Z),
                         ..default()
                     })
                     .insert(ShootRadiusImage);

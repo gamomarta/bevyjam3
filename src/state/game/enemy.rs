@@ -111,9 +111,9 @@ fn spawn_boss(
         .spawn(SpriteBundle {
             texture: sprites.enemy.clone(),
             transform: Transform::from_translation(Vec3::new(
-                -window.width() / 2.0 - ENEMY_SIZE,
+                -window.width() / 2.0 - ENEMY_SIZE * 5.0,
                 0.0,
-                layers::ENEMY_LAYER,
+                layers::ENEMY_LAYER - 0.95,
             ))
             .with_scale(Vec3::splat(ENEMY_SPRITE_SCALE * 5.0)),
             ..Default::default()
