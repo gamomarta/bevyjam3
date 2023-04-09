@@ -88,8 +88,9 @@ fn display_hud(mut commands: Commands, fonts: Res<Fonts>, sprites: Res<Sprites>)
             parent
                 .spawn(ButtonBundle {
                     style: Style {
-                        size: Size::new(Val::Percent(100.0), Val::Px(65.0)),
+                        size: Size::all(Val::Px(150.0)),
                         align_items: AlignItems::Center,
+                        align_content: AlignContent::Center,
                         ..default()
                     },
                     background_color: BackgroundColor::from(BUTTON_COLOR),

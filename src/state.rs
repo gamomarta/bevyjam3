@@ -3,6 +3,7 @@ use bevy::prelude::*;
 mod game;
 mod game_over;
 mod loading;
+mod win;
 
 pub struct State;
 
@@ -11,7 +12,8 @@ impl Plugin for State {
         app.add_state::<AppState>()
             .add_plugin(loading::Loading)
             .add_plugin(game::Game)
-            .add_plugin(game_over::GameOver);
+            .add_plugin(game_over::GameOver)
+            .add_plugin(win::Win);
     }
 }
 
@@ -24,6 +26,7 @@ pub enum AppState {
     TowerChoice,
     TowerPlacing,
     GameOver,
+    Win,
 }
 
 #[derive(Component)]

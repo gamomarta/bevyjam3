@@ -16,7 +16,7 @@ pub(super) struct EnemyPlugin;
 
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(EnemySpawner::from_seconds(1.0))
+        app.add_system(spawn_spawner.in_schedule(OnEnter(AppState::PreGame)))
             .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)))
             .add_system(vertical_bounds.in_set(OnUpdate(AppState::Game)))
             .add_system(enemy_death.in_set(OnUpdate(AppState::Game)))
@@ -30,7 +30,7 @@ pub(super) struct Boss;
 #[derive(Component)]
 pub(super) struct Enemy;
 
-#[derive(Resource)]
+#[derive(Component)]
 struct EnemySpawner {
     timer: Timer,
     number_spawned: u64,
@@ -45,14 +45,21 @@ impl EnemySpawner {
     }
 }
 
+fn spawn_spawner(mut commands: Commands) {
+    commands
+        .spawn(EnemySpawner::from_seconds(1.0))
+        .insert(GameEntity);
+}
+
 fn spawn_enemy(
     mut commands: Commands,
     sprites: Res<Sprites>,
     time: Res<Time>,
-    mut spawner: ResMut<EnemySpawner>,
+    mut spawner: Query<&mut EnemySpawner>,
     window: Query<&Window>,
 ) {
     let window = window.single();
+    let mut spawner = spawner.single_mut();
     let rng = rand::thread_rng();
 
     if spawner.timer.tick(time.delta()).just_finished() {
@@ -67,7 +74,7 @@ fn spawn_enemy(
 fn spawn_normal_enemy(
     commands: &mut Commands,
     sprites: Res<Sprites>,
-    spawner: &mut ResMut<EnemySpawner>,
+    spawner: &mut EnemySpawner,
     window: &Window,
     mut rng: ThreadRng,
 ) {
@@ -97,7 +104,7 @@ fn spawn_normal_enemy(
 fn spawn_boss(
     commands: &mut Commands,
     sprites: Res<Sprites>,
-    spawner: &mut ResMut<EnemySpawner>,
+    spawner: &mut EnemySpawner,
     window: &Window,
 ) {
     commands
@@ -129,21 +136,33 @@ fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, Wi
 }
 
 fn enemy_death(
+    mut next_state: ResMut<NextState<AppState>>,
     sprites: Res<Sprites>,
-    mut enemies: Query<(&mut Handle<Image>, &mut Sprite, &mut Velocity, &Health), With<Enemy>>,
+    mut enemies: Query<
+        (
+            &mut Handle<Image>,
+            &mut Sprite,
+            &mut Velocity,
+            &Health,
+            Option<&Boss>,
+        ),
+        With<Enemy>,
+    >,
 ) {
-    for (mut enemy_image, mut enemy_sprite, mut enemy_velocity, enemy_health) in enemies.iter_mut()
+    for (mut enemy_image, mut enemy_sprite, mut enemy_velocity, enemy_health, boss) in
+        enemies.iter_mut()
     {
         if enemy_health.is_dead() {
             *enemy_image = sprites.defeated_enemy.clone();
-            enemy_sprite.flip_x = true;
-            // enemy_sprite.color = Color::Rgba {
-            //     red: 0.2,
-            //     green: 0.3,
-            //     blue: 1.0,
-            //     alpha: 1.0,
-            // };
-            *enemy_velocity = Velocity::new(-1000.0, 0.0);
+            match boss {
+                None => {
+                    enemy_sprite.flip_x = true;
+                    *enemy_velocity = Velocity::new(-1000.0, 0.0);
+                }
+                Some(_) => {
+                    next_state.set(AppState::Win);
+                }
+            }
         }
     }
 }
