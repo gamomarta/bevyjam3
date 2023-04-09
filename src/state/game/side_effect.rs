@@ -1,6 +1,8 @@
 use bevy::ecs::system::EntityCommands;
 use bevy::prelude::*;
 
+use rand::prelude::*;
+
 use crate::state::AppState;
 
 mod duplicate;
@@ -46,18 +48,17 @@ pub enum SideEffect {
 }
 
 impl SideEffect {
-    pub fn random() -> Self {
-        use rand::Rng;
-        let mut rng = rand::thread_rng();
-        match rng.gen_range(0..6) {
-            0 => SideEffect::ExtraDamage,
-            1 => SideEffect::Strengthen,
-            2 => SideEffect::InstaKill,
-            3 => SideEffect::Duplicate,
-            4 => SideEffect::SlowDown,
-            5 => SideEffect::SpeedUp,
-            _ => unreachable!(),
-        }
+    pub fn sample<R: Rng>(rng: &mut R, size: usize) -> Vec<Self> {
+        vec![
+            SideEffect::ExtraDamage,
+            SideEffect::Strengthen,
+            SideEffect::InstaKill,
+            SideEffect::Duplicate,
+            SideEffect::SlowDown,
+            SideEffect::SpeedUp,
+        ]
+        .into_iter()
+        .choose_multiple(rng, size)
     }
     pub fn insert_into(&self, commands: &mut EntityCommands) {
         match self {

@@ -1,12 +1,12 @@
 use crate::constants::*;
 use bevy::prelude::*;
 
-use crate::assets::{Fonts, Sprites};
+use crate::assets::*;
 use crate::state::game::bullet::Bullet;
 use crate::state::game::damage::Damage;
 use rand::Rng;
 
-use crate::state::game::enemy::Enemy;
+use crate::state::game::enemy::*;
 use crate::state::game::health::Health;
 use crate::state::game::hud::popup::display_popup;
 use crate::state::game::movement::Velocity;
@@ -29,12 +29,17 @@ pub(super) fn apply(
     sprites: Res<Sprites>,
     fonts: Res<Fonts>,
     mut enemies: Query<
-        (&mut Transform, &Velocity, &Health, &Damage),
+        (&mut Transform, &Velocity, &Health, &Damage, Option<&Boss>),
         (With<Enemy>, Without<Bullet>),
     >,
     bullets: Query<&Transform, (With<Bullet>, With<Duplicate>)>,
 ) {
-    for (mut enemy_transform, enemy_velocity, enemy_health, enemy_damage) in enemies.iter_mut() {
+    for (mut enemy_transform, enemy_velocity, enemy_health, enemy_damage, boss) in
+        enemies.iter_mut()
+    {
+        if boss.is_some() {
+            continue;
+        }
         for bullet_transform in bullets.iter() {
             let mut rng = rand::thread_rng();
             let distance_between_centers =

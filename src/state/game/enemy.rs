@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use rand::prelude::ThreadRng;
 use std::time::Duration;
 
 use crate::assets::Sprites;
@@ -15,7 +16,7 @@ pub(super) struct EnemyPlugin;
 
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(SpawnTimer(Timer::from_seconds(1.0, TimerMode::Repeating)))
+        app.insert_resource(EnemySpawner::from_seconds(1.0))
             .add_system(spawn_enemy.in_set(OnUpdate(AppState::Game)))
             .add_system(vertical_bounds.in_set(OnUpdate(AppState::Game)))
             .add_system(enemy_death.in_set(OnUpdate(AppState::Game)))
@@ -24,43 +25,99 @@ impl Plugin for EnemyPlugin {
 }
 
 #[derive(Component)]
+pub(super) struct Boss;
+
+#[derive(Component)]
 pub(super) struct Enemy;
 
-#[derive(Deref, DerefMut, Resource)]
-struct SpawnTimer(Timer);
+#[derive(Resource)]
+struct EnemySpawner {
+    timer: Timer,
+    number_spawned: u64,
+}
+
+impl EnemySpawner {
+    fn from_seconds(duration: f32) -> Self {
+        Self {
+            timer: Timer::from_seconds(duration, TimerMode::Repeating),
+            number_spawned: 0,
+        }
+    }
+}
 
 fn spawn_enemy(
     mut commands: Commands,
     sprites: Res<Sprites>,
     time: Res<Time>,
-    mut timer: ResMut<SpawnTimer>,
+    mut spawner: ResMut<EnemySpawner>,
     window: Query<&Window>,
 ) {
     let window = window.single();
-    let mut rng = rand::thread_rng();
+    let rng = rand::thread_rng();
 
-    if timer.tick(time.delta()).just_finished() {
-        commands
-            .spawn(SpriteBundle {
-                texture: sprites.enemy.clone(),
-                transform: Transform::from_translation(Vec3::new(
-                    -window.width() / 2.0 - ENEMY_SIZE,
-                    rng.gen_range(
-                        -window.height() / 2.0 + ENEMY_SIZE..window.height() / 2.0 - ENEMY_SIZE,
-                    ),
-                    layers::ENEMY_LAYER + rng.gen_range(-0.9..0.9),
-                ))
-                .with_scale(Vec3::splat(ENEMY_SPRITE_SCALE)),
-                ..Default::default()
-            })
-            .insert(Velocity::new(ENEMY_SPEED, 0.0))
-            .insert(Health::new(ENEMY_HEALTH))
-            .insert(Damage::new(ENEMY_DAMAGE))
-            .insert(Enemy)
-            .insert(GameEntity);
-        let delay = rng.gen_range(1.0..3.0); // magic delay lol
-        timer.set_duration(Duration::from_secs_f32(delay));
+    if spawner.timer.tick(time.delta()).just_finished() {
+        if spawner.number_spawned < 50 {
+            spawn_normal_enemy(&mut commands, sprites, &mut spawner, window, rng);
+        } else {
+            spawn_boss(&mut commands, sprites, &mut spawner, window);
+        }
     }
+}
+
+fn spawn_normal_enemy(
+    commands: &mut Commands,
+    sprites: Res<Sprites>,
+    spawner: &mut ResMut<EnemySpawner>,
+    window: &Window,
+    mut rng: ThreadRng,
+) {
+    spawner.number_spawned += 1;
+    commands
+        .spawn(SpriteBundle {
+            texture: sprites.enemy.clone(),
+            transform: Transform::from_translation(Vec3::new(
+                -window.width() / 2.0 - ENEMY_SIZE,
+                rng.gen_range(
+                    -window.height() / 2.0 + ENEMY_SIZE..window.height() / 2.0 - ENEMY_SIZE,
+                ),
+                layers::ENEMY_LAYER + rng.gen_range(-0.9..0.9),
+            ))
+            .with_scale(Vec3::splat(ENEMY_SPRITE_SCALE)),
+            ..Default::default()
+        })
+        .insert(Velocity::new(ENEMY_SPEED, 0.0))
+        .insert(Health::new(ENEMY_HEALTH))
+        .insert(Damage::new(ENEMY_DAMAGE))
+        .insert(Enemy)
+        .insert(GameEntity);
+    let delay = rng.gen_range(1.0..3.0); // magic delay lol
+    spawner.timer.set_duration(Duration::from_secs_f32(delay));
+}
+
+fn spawn_boss(
+    commands: &mut Commands,
+    sprites: Res<Sprites>,
+    spawner: &mut ResMut<EnemySpawner>,
+    window: &Window,
+) {
+    commands
+        .spawn(SpriteBundle {
+            texture: sprites.enemy.clone(),
+            transform: Transform::from_translation(Vec3::new(
+                -window.width() / 2.0 - ENEMY_SIZE,
+                0.0,
+                layers::ENEMY_LAYER,
+            ))
+            .with_scale(Vec3::splat(ENEMY_SPRITE_SCALE * 5.0)),
+            ..Default::default()
+        })
+        .insert(Velocity::new(ENEMY_SPEED, 0.0))
+        .insert(Health::new(ENEMY_HEALTH * 50.0))
+        .insert(Damage::new(ENEMY_DAMAGE * 50.0))
+        .insert(Enemy)
+        .insert(Boss)
+        .insert(GameEntity);
+    spawner.timer.pause();
 }
 
 fn vertical_bounds(window: Query<&Window>, mut enemies: Query<&mut Transform, With<Enemy>>) {

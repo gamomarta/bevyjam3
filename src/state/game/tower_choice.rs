@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+
 use rand::Rng;
 
 use crate::assets::*;
@@ -40,11 +41,7 @@ impl TowerCreationEvent {
         let number_of_side_effects =
             rng.gen_range(MIN_NUMBER_OF_SIDE_EFFECTS..MAX_NUMBER_OF_SIDE_EFFECTS + 1);
         TowerCreationEvent {
-            side_effects: SideEffects(
-                (0..number_of_side_effects)
-                    .map(|_| SideEffect::random())
-                    .collect(),
-            ),
+            side_effects: SideEffects(SideEffect::sample(&mut rng, number_of_side_effects)),
         }
     }
 }
