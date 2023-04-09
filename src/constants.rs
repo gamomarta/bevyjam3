@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
 pub const NUMBER_OF_TOWERS_TO_GENERATE: u8 = 3;
-pub const MIN_NUMBER_OF_SIDE_EFFECTS: u8 = 2;
-pub const MAX_NUMBER_OF_SIDE_EFFECTS: u8 = 5;
+pub const MIN_NUMBER_OF_SIDE_EFFECTS: usize = 2;
+pub const MAX_NUMBER_OF_SIDE_EFFECTS: usize = 4;
 
 pub mod layers {
     pub const BACKGROUND_LAYER: f32 = 0.0;
@@ -58,8 +58,8 @@ pub const TOWER_INVALID_COLOR: Color = Color::Rgba {
     alpha: 0.6,
 };
 
-pub const STARTING_MONEY: u128 = 35;
-pub const TOWER_COST_INCREASE: u128 = 15;
+pub const STARTING_MONEY: u128 = 20 + TOWER_COST_INCREASE;
+pub const TOWER_COST_INCREASE: u128 = 25;
 
 pub const BUTTON_COLOR: Color = Color::DARK_GRAY;
 pub const HOVERED_COLOR: Color = Color::GREEN;
