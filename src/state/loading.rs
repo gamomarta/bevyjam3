@@ -15,16 +15,54 @@ impl Plugin for Loading {
     fn build(&self, app: &mut App) {
         app.init_resource::<AssetsLoading>()
             .add_system(spawn_camera.in_schedule(OnEnter(AppState::Loading)))
+            .add_system(show_ui.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_sprites.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_fonts.in_schedule(OnEnter(AppState::Loading)))
             .add_system(load_sound.in_schedule(OnEnter(AppState::Loading)))
             .add_system(create_color_materials.in_schedule(OnEnter(AppState::Loading)))
-            .add_system(check_loading.in_set(OnUpdate(AppState::Loading)));
+            .add_system(check_loading.in_set(OnUpdate(AppState::Loading)))
+            .add_system(clean_up.in_schedule(OnExit(AppState::Loading)));
     }
 }
 
+#[derive(Component)]
+struct LoadingScreen;
+
 fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2dBundle::default());
+}
+
+fn show_ui(asset_server: Res<AssetServer>, mut commands: Commands) {
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                flex_direction: FlexDirection::Column,
+                size: Size::all(Val::Percent(100.0)),
+                align_items: AlignItems::Center,
+                justify_content: JustifyContent::Center,
+                gap: Size::all(Val::Percent(1.0)),
+                position_type: PositionType::Absolute,
+                position: UiRect {
+                    bottom: Val::Px(0.0),
+                    right: Val::Px(0.0),
+                    ..Default::default()
+                },
+                ..default()
+            },
+            background_color: BackgroundColor::from(Color::BLACK),
+            ..default()
+        })
+        .insert(LoadingScreen)
+        .with_children(|screen| {
+            screen.spawn(TextBundle::from_section(
+                "Loading...",
+                TextStyle {
+                    font: asset_server.load("Kenney Future.ttf"),
+                    font_size: 100.0,
+                    color: Color::WHITE,
+                },
+            ));
+        });
 }
 
 //TODO: could be a method of AssetsLoading -> changed to AssetLoader
@@ -96,5 +134,11 @@ fn check_loading(
         LoadState::Failed => {
             unimplemented!()
         }
+    }
+}
+
+fn clean_up(mut commands: Commands, entities: Query<Entity, With<LoadingScreen>>) {
+    for entity in entities.iter() {
+        commands.entity(entity).despawn_recursive();
     }
 }
