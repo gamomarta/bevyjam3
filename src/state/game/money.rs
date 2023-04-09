@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use std::fmt::Formatter;
 use std::ops::AddAssign;
 
-use crate::constants::STARTING_MONEY;
+use crate::constants::*;
 
 #[derive(Component, Deref, DerefMut)]
 pub struct Money(u128);
@@ -50,5 +50,11 @@ impl std::fmt::Display for TowerCost {
 impl Default for TowerCost {
     fn default() -> Self {
         TowerCost(10)
+    }
+}
+
+impl TowerCost {
+    pub fn increase(&mut self) {
+        self.0 += TOWER_COST_INCREASE;
     }
 }

@@ -10,7 +10,8 @@ impl Plugin for State {
     fn build(&self, app: &mut App) {
         app.add_state::<AppState>()
             .add_plugin(loading::Loading)
-            .add_plugin(game::Game);
+            .add_plugin(game::Game)
+            .add_plugin(game_over::GameOver);
     }
 }
 
@@ -24,3 +25,6 @@ pub enum AppState {
     TowerPlacing,
     GameOver,
 }
+
+#[derive(Component)]
+pub struct GameEntity;

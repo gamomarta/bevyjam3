@@ -5,12 +5,12 @@ use crate::assets::*;
 use crate::constants::layers::*;
 use crate::constants::*;
 use crate::state::game::enemy::Enemy;
-use crate::state::game::goal::Goal;
+use crate::state::game::money::TowerCost;
 use crate::state::game::shooting::*;
 use crate::state::game::tower::Tower;
 use crate::state::game::tower_choice::TowerCreationEvent;
 use crate::state::game::wobble::ShootWobble;
-use crate::state::AppState;
+use crate::state::*;
 use crate::utils::*;
 
 pub(in crate::state) struct TowerPlacing;
@@ -86,7 +86,8 @@ fn spawn_tower_plan(
                     })
                     .insert(ShootRadiusImage);
             })
-            .insert(tower_creation_event.side_effects.clone());
+            .insert(tower_creation_event.side_effects.clone())
+            .insert(GameEntity);
     }
 }
 
@@ -116,15 +117,9 @@ fn check_enemy_overlap(
     }
 }
 
-fn check_goal_overlap(
-    mut tower_plans: Query<(&mut TowerPlan, &Transform)>,
-    goals: Query<&Transform, With<Goal>>,
-) {
+fn check_goal_overlap(mut tower_plans: Query<(&mut TowerPlan, &Transform)>) {
     for (mut tower_plan, tower_transform) in tower_plans.iter_mut() {
-        tower_plan.goal_overlap = goals.iter().any(|goal_transform| {
-            (goal_transform.translation - tower_transform.translation).length()
-                < TOWER_RADIUS + GOAL_SIZE
-        })
+        tower_plan.goal_overlap = tower_transform.translation.x > GOAL_POSITION - TOWER_RADIUS;
     }
 }
 
@@ -160,12 +155,14 @@ fn click(
     mouse: Res<Input<MouseButton>>,
     mut next_state: ResMut<NextState<AppState>>,
     tower_plans: Query<&TowerPlan>,
+    mut tower_cost: Query<&mut TowerCost>,
 ) {
     for tower_plan in tower_plans.iter() {
         if !tower_plan.is_valid() {
             continue;
         }
         if mouse.just_pressed(MouseButton::Left) {
+            tower_cost.single_mut().increase();
             next_state.set(AppState::Game);
         }
     }

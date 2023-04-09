@@ -1,11 +1,18 @@
 use bevy::ecs::system::EntityCommands;
 use bevy::prelude::*;
-use rand_derive::Rand;
 
 use crate::state::AppState;
 
+mod duplicate;
+use duplicate::Duplicate;
 mod extra_damage;
-use extra_damage::ExtraDamageSideEffect;
+pub use extra_damage::ExtraDamageSideEffect;
+mod insta_kill;
+use insta_kill::InstaKill;
+mod slow_down;
+use slow_down::SlowDown;
+mod speed_up;
+use speed_up::SpeedUp;
 mod strengthen;
 use strengthen::StrengthenSideEffect;
 
@@ -13,24 +20,42 @@ pub(super) struct SideEffectPlugin;
 
 impl Plugin for SideEffectPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(extra_damage::apply.in_set(OnUpdate(AppState::Game)))
+        app.add_system(duplicate::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(insta_kill::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(slow_down::apply.in_set(OnUpdate(AppState::Game)))
+            .add_system(
+                speed_up::apply
+                    .in_set(OnUpdate(AppState::Game))
+                    .after(slow_down::apply),
+            )
             .add_system(strengthen::apply.in_set(OnUpdate(AppState::Game)));
     }
 }
 
-#[derive(Clone, Rand)]
+#[derive(Clone)]
 pub enum SideEffect {
     ExtraDamage,
     Strengthen,
+
+    InstaKill,
+    Duplicate,
+
+    SlowDown,
+    SpeedUp,
+    //TODO: Knockback/Knockforward, Freeze/Teleport, Smallen/Enlarge
 }
 
 impl SideEffect {
     pub fn random() -> Self {
         use rand::Rng;
         let mut rng = rand::thread_rng();
-        match rng.gen_range(0..2) {
+        match rng.gen_range(0..6) {
             0 => SideEffect::ExtraDamage,
             1 => SideEffect::Strengthen,
+            2 => SideEffect::InstaKill,
+            3 => SideEffect::Duplicate,
+            4 => SideEffect::SlowDown,
+            5 => SideEffect::SpeedUp,
             _ => unreachable!(),
         }
     }
@@ -38,18 +63,30 @@ impl SideEffect {
         match self {
             SideEffect::ExtraDamage => commands.insert(ExtraDamageSideEffect::default()),
             SideEffect::Strengthen => commands.insert(StrengthenSideEffect::default()),
+            SideEffect::InstaKill => commands.insert(InstaKill::default()),
+            SideEffect::Duplicate => commands.insert(Duplicate::default()),
+            SideEffect::SlowDown => commands.insert(SlowDown::default()),
+            SideEffect::SpeedUp => commands.insert(SpeedUp::default()),
         };
     }
     pub fn get_type(&self) -> SideEffectType {
         match self {
             SideEffect::ExtraDamage => ExtraDamageSideEffect::get_type(),
             SideEffect::Strengthen => StrengthenSideEffect::get_type(),
+            SideEffect::InstaKill => InstaKill::get_type(),
+            SideEffect::Duplicate => Duplicate::get_type(),
+            SideEffect::SlowDown => SlowDown::get_type(),
+            SideEffect::SpeedUp => SpeedUp::get_type(),
         }
     }
     pub fn get_description(&self) -> String {
         match self {
             SideEffect::ExtraDamage => ExtraDamageSideEffect::get_description(),
             SideEffect::Strengthen => StrengthenSideEffect::get_description(),
+            SideEffect::InstaKill => InstaKill::get_description(),
+            SideEffect::Duplicate => Duplicate::get_description(),
+            SideEffect::SlowDown => SlowDown::get_description(),
+            SideEffect::SpeedUp => SpeedUp::get_description(),
         }
     }
 }

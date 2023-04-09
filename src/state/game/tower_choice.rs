@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use rand::Rng;
 
 use crate::assets::*;
 use crate::constants::*;
@@ -35,8 +36,15 @@ pub struct SideEffects(Vec<SideEffect>);
 
 impl TowerCreationEvent {
     fn random() -> Self {
+        let mut rng = rand::thread_rng();
+        let number_of_side_effects =
+            rng.gen_range(MIN_NUMBER_OF_SIDE_EFFECTS..MAX_NUMBER_OF_SIDE_EFFECTS + 1);
         TowerCreationEvent {
-            side_effects: SideEffects((0..2).map(|_| SideEffect::random()).collect()),
+            side_effects: SideEffects(
+                (0..number_of_side_effects)
+                    .map(|_| SideEffect::random())
+                    .collect(),
+            ),
         }
     }
 }
@@ -55,6 +63,14 @@ fn generate_towers(mut commands: Commands, sprites: Res<Sprites>, fonts: Res<Fon
                             .spawn(tower_selection_button(&sprites.tower))
                             .insert(TowerButton)
                             .insert(tower_creation_event.clone());
+                        panel.spawn(TextBundle::from_section(
+                            "Side effects:",
+                            TextStyle {
+                                font: fonts.default_font.clone(),
+                                font_size: 15.0,
+                                color: Color::WHITE,
+                            },
+                        ));
                         for side_effect in tower_creation_event.side_effects.iter() {
                             panel.spawn(side_effect_text(side_effect, &fonts.default_font));
                         }

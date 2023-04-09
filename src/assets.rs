@@ -13,15 +13,16 @@ impl Plugin for AssetsPlugin {
 
 #[derive(Default, Resource)]
 pub struct Sprites {
-    pub bevy_logo: Handle<Image>,
+    pub background: Handle<Image>,
     pub tower: Handle<Image>,
     pub bullet: Handle<Image>,
     pub enemy: Handle<Image>,
-    pub goal: Handle<Image>,
+    pub defeated_enemy: Handle<Image>,
 }
 
 #[derive(Default, Resource)]
 pub struct Materials {
+    pub goal: Handle<ColorMaterial>,
     pub tower_range: Handle<ColorMaterial>,
     pub tower_invalid: Handle<ColorMaterial>,
 }
@@ -34,4 +35,7 @@ pub struct Fonts {
 #[derive(Default, Resource)]
 pub struct Music {
     pub main_theme: Handle<AudioSource>,
+    pub main_theme_handle: Handle<AudioSink>,
+    pub game_over: Handle<AudioSource>,
+    pub game_over_handle: Handle<AudioSink>,
 }
