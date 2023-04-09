@@ -10,6 +10,7 @@ pub mod layers {
     pub const GOAL_LAYER: f32 = 1.0;
     pub const ENEMY_LAYER: f32 = 2.0;
     pub const TOWER_LAYER: f32 = 1.0;
+    pub const RANGE_LAYER: f32 = 4.0;
 }
 
 pub const WINDOW_WIDTH: f32 = 1280.0;

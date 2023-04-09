@@ -11,6 +11,7 @@ use crate::state::game::health::Health;
 use crate::state::game::hud::popup::display_popup;
 use crate::state::game::movement::Velocity;
 use crate::state::game::side_effect::*;
+use crate::state::GameEntity;
 
 #[derive(Component, Default)]
 pub struct Duplicate;
@@ -41,7 +42,7 @@ pub(super) fn apply(
             continue;
         }
         for bullet_transform in bullets.iter() {
-            let mut rng = rand::thread_rng();
+            let mut rng = thread_rng();
             let distance_between_centers =
                 (enemy_transform.translation - bullet_transform.translation).length();
             if distance_between_centers <= ENEMY_SIZE + BULLET_SIZE && rng.gen_bool(0.05) {
@@ -64,7 +65,8 @@ pub(super) fn apply(
                     .insert(enemy_velocity.clone())
                     .insert(enemy_health.clone())
                     .insert(enemy_damage.clone())
-                    .insert(Enemy);
+                    .insert(Enemy)
+                    .insert(GameEntity);
                 enemy_transform.translation += translation_offset;
             }
         }
