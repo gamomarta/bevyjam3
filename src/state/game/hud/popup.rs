@@ -13,6 +13,7 @@ pub fn display_popup<Text: Into<String>>(
     commands
         .spawn(NodeBundle {
             style: Style {
+                margin: UiRect::all(Val::Px(10.0)),
                 position: UiRect {
                     left: Val::Px(WINDOW_WIDTH / 2.0 + position.x),
                     top: Val::Px(WINDOW_HEIGHT / 2.0 - position.y),

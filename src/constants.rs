@@ -58,7 +58,8 @@ pub const TOWER_INVALID_COLOR: Color = Color::Rgba {
     alpha: 0.6,
 };
 
-pub const STARTING_MONEY: u128 = 30;
+pub const STARTING_MONEY: u128 = 35;
+pub const TOWER_COST_INCREASE: u128 = 15;
 
 pub const BUTTON_COLOR: Color = Color::DARK_GRAY;
 pub const HOVERED_COLOR: Color = Color::GREEN;

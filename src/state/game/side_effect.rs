@@ -26,7 +26,7 @@ impl Plugin for SideEffectPlugin {
             .add_system(
                 speed_up::apply
                     .in_set(OnUpdate(AppState::Game))
-                    .before(slow_down::apply),
+                    .after(slow_down::apply),
             )
             .add_system(strengthen::apply.in_set(OnUpdate(AppState::Game)));
     }
