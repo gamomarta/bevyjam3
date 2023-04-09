@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use rand::prelude::*;
+
 use crate::assets::Fonts;
 use crate::constants::*;
 use crate::events::GameOverEvent;
@@ -101,6 +103,22 @@ fn show_ui(
                         },
                     ));
                 });
+            let tip = vec![
+                "Once your leg muscles are weak, they never go back to what they were.",
+                "Your doctors will go on paid leave if they get infected.",
+                "Green good, red bad.",
+            ]
+            .into_iter()
+            .choose(&mut thread_rng())
+            .unwrap();
+            screen.spawn(TextBundle::from_section(
+                format!("Tip: {tip}"),
+                TextStyle {
+                    font: fonts.default_font.clone(),
+                    font_size: 30.0,
+                    color: Color::WHITE,
+                },
+            ));
         });
 }
 
